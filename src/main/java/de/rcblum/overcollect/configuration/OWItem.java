@@ -74,10 +74,9 @@ public class OWItem {
 	}
 
 	/**
-	 * Returns the category of the item, for filters & co its the screen
-	 * resolution in String form, e.G. "1920x1080". For glyphs of the primary
-	 * stats its ocr_primary_font, for the secondary stats its
-	 * ocr_secondary_font
+	 * Returns the category of the item, for filters & co its the screen resolution
+	 * in String form, e.G. "1920x1080". For glyphs of the primary stats its
+	 * ocr_primary_font, for the secondary stats its ocr_secondary_font
 	 * 
 	 * @return
 	 */
@@ -118,8 +117,7 @@ public class OWItem {
 	}
 
 	/**
-	 * Returns the item name, for Heroes it the heroname, for map its the map
-	 * name.
+	 * Returns the item name, for Heroes it the heroname, for map its the map name.
 	 * 
 	 * @return
 	 */
@@ -169,16 +167,16 @@ public class OWItem {
 	/**
 	 * Reutnrs if the item has a filter, to match screenshots against.
 	 * 
-	 * @return <code>True</code> if a {@link Filter} is present,
-	 *         <code>false</code> if not
+	 * @return <code>True</code> if a {@link Filter} is present, <code>false</code>
+	 *         if not
 	 */
 	public boolean hasFilter() {
 		return Files.exists(Paths.get(libPath, category, itemName, "filter.json"));
 	}
 
 	/**
-	 * Returns if this represents a glyph (0..9) and ahs a Glyph-Object to test
-	 * an image against
+	 * Returns if this represents a glyph (0..9) and ahs a Glyph-Object to test an
+	 * image against
 	 * 
 	 * @return <code>true</code> if item is a glyph, <code>false</code> if not
 	 */
@@ -200,8 +198,8 @@ public class OWItem {
 	/**
 	 * Returns if the item has a template Screenshot attached to it
 	 * 
-	 * @return <code>true</code> if there is an screenshot, <code>false</code>
-	 *         if not
+	 * @return <code>true</code> if there is an screenshot, <code>false</code> if
+	 *         not
 	 */
 	public boolean hasTemplate() {
 		return Files.exists(Paths.get(libPath, category, itemName, "template.png"));
@@ -230,8 +228,8 @@ public class OWItem {
 	/**
 	 * Returns if this item starts a new Match
 	 * 
-	 * @return <code>true</code> if item is a Match indicator,
-	 *         <code>false</code> if it is not.
+	 * @return <code>true</code> if item is a Match indicator, <code>false</code> if
+	 *         it is not.
 	 */
 	public boolean isMatchIndicator() {
 		return Files.exists(Paths.get(libPath, category, itemName, "matchindicator"));
@@ -306,8 +304,8 @@ public class OWItem {
 	}
 
 	/**
-	 * Sets the name of the item, this is only temporally, as the items are
-	 * loaded from the library at program start
+	 * Sets the name of the item, this is only temporally, as the items are loaded
+	 * from the library at program start
 	 * 
 	 * @param itemName
 	 */
@@ -337,10 +335,10 @@ public class OWItem {
 		else if (!selected && Files.exists(Paths.get(libPath, category, itemName, "matchindicator")))
 			Files.delete(Paths.get(libPath, category, itemName, "matchindicator"));
 	}
-	
+
 	/**
-	 * Sets the screen resolution this item is configured for. Do not use if you
-	 * are not shure that the item works for the new Screen resolution
+	 * Sets the screen resolution this item is configured for. Do not use if you are
+	 * not shure that the item works for the new Screen resolution
 	 * 
 	 * @param resolution
 	 */

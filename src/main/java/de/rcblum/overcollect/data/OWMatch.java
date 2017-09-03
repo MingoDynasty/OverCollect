@@ -47,7 +47,7 @@ public class OWMatch {
 	private String matchId = null;
 
 	private String account = null;
-	
+
 	private String season = null;
 
 	private String startTime = null;
@@ -79,7 +79,7 @@ public class OWMatch {
 	public String getAccount() {
 		return account;
 	}
-	
+
 	public String getSeason() {
 		return season;
 	}
@@ -151,7 +151,7 @@ public class OWMatch {
 	public void setAccount(String account) {
 		this.account = account;
 	}
-	
+
 	public void setSeason(String season) {
 		this.season = season;
 	}
@@ -183,11 +183,11 @@ public class OWMatch {
 	public void setSr(String sr) {
 		this.sr = sr;
 	}
-	
+
 	public void setStacksize(int stacksize) {
 		this.stacksize = stacksize;
 	}
-	
+
 	public void setStartTime(String startTime) {
 		this.startTime = startTime;
 	}

@@ -59,7 +59,8 @@ public class OWStats {
 
 	public void setObjectiveTime(String objectiveTime) {
 		this.objectiveTime = objectiveTime.length() == 4
-				? objectiveTime.substring(0, 2) + ":" + objectiveTime.substring(2, 4) : objectiveTime;
+				? objectiveTime.substring(0, 2) + ":" + objectiveTime.substring(2, 4)
+				: objectiveTime;
 	}
 
 }

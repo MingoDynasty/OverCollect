@@ -33,15 +33,15 @@ public class JOverCollectFrame extends JFrame {
 		this.app = app;
 		if (OWLib.getInstance().getAccounts().size() == 0) {
 			String accountName = null;
-			do  {
-				accountName =this.showAccountCreation();
+			do {
+				accountName = this.showAccountCreation();
 			} while (accountName == null);
 			OWLib.getInstance().setActiveAccount(accountName);
 		}
 		if (OWLib.getInstance().getSeasons().size() == 0) {
 			String seasonName = null;
-			do  {
-				seasonName =this.showSeasonCreation();
+			do {
+				seasonName = this.showSeasonCreation();
 			} while (seasonName == null);
 			OWLib.getInstance().setActiveSeason(seasonName);
 		}
@@ -72,16 +72,14 @@ public class JOverCollectFrame extends JFrame {
 		pSidebar = new JOWSidebar(app);
 		contentPane.add(pSidebar, BorderLayout.NORTH);
 	}
-	
+
 	public String showAccountCreation() {
-		String name = JOptionPane.showInputDialog(this,
-                "Add Account:", null);
+		String name = JOptionPane.showInputDialog(this, "Add Account:", null);
 		return name;
 	}
-	
+
 	public String showSeasonCreation() {
-		String name = JOptionPane.showInputDialog(this,
-                "Add Season:", null);
+		String name = JOptionPane.showInputDialog(this, "Add Season:", null);
 		return name;
 	}
 

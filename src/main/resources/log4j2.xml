@@ -18,10 +18,13 @@
 
 		<!-- Appender for test/debug logging; not recommended for production. -->
 		<RollingFile name="debug-log" fileName="${log-path}/${app-name}-debug.log"
-			filePattern="${log-path}/${app-name}-debug-%d{${date-format}}.log" append="false">
-			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] %c{} (%F:%L) => %m%n" />
+			filePattern="${log-path}/${app-name}-debug-%d{${date-format}}.log"
+			append="false">
+			<PatternLayout
+				pattern="%d{${date-time-format}} | %-5p | [%t] %c{} (%F:%L) => %m%n" />
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
 			</Policies>
 		</RollingFile>
 
@@ -30,16 +33,20 @@
 			filePattern="${log-path}/${app-name}-%d{${date-format}}.log" append="true">
 			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] | %c{} => %m%n" />
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
 			</Policies>
 		</RollingFile>
 
 		<!-- Appender for production log for errors only -->
 		<RollingFile name="error-log" fileName="${log-path}/${app-name}-errors.log"
-			filePattern="${log-path}/${app-name}-errors-%d{${date-format}}.log" append="true">
-			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] | %x | %c (%F:%L) => %m%n" />
+			filePattern="${log-path}/${app-name}-errors-%d{${date-format}}.log"
+			append="true">
+			<PatternLayout
+				pattern="%d{${date-time-format}} | %-5p | [%t] | %x | %c (%F:%L) => %m%n" />
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+				<TimeBasedTriggeringPolicy interval="1"
+					modulate="true" />
 			</Policies>
 		</RollingFile>
 

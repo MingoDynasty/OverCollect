@@ -34,12 +34,12 @@ public class CacheOptional<T> {
 	private static final CacheOptional<?> EMPTY = new CacheOptional<>();
 
 	/**
-	 * Returns an empty {@code CacheOptional} instance. No value is present for
-	 * this CacheOptional.
+	 * Returns an empty {@code CacheOptional} instance. No value is present for this
+	 * CacheOptional.
 	 *
-	 * @apiNote Though it may be tempting to do so, avoid testing if an object
-	 *          is empty by comparing with {@code ==} against instances returned
-	 *          by {@code Option.empty()}. There is no guarantee that it is a
+	 * @apiNote Though it may be tempting to do so, avoid testing if an object is
+	 *          empty by comparing with {@code ==} against instances returned by
+	 *          {@code Option.empty()}. There is no guarantee that it is a
 	 *          singleton. Instead, use {@link #isPresent()}.
 	 *
 	 * @param <T>
@@ -53,8 +53,7 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Returns an {@code CacheOptional} with the specified present non-null
-	 * value.
+	 * Returns an {@code CacheOptional} with the specified present non-null value.
 	 *
 	 * @param <T>
 	 *            the class of the value
@@ -69,8 +68,7 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Returns an {@code CacheOptional} with the specified present non-null
-	 * value.
+	 * Returns an {@code CacheOptional} with the specified present non-null value.
 	 *
 	 * @param <T>
 	 *            the class of the value
@@ -85,15 +83,15 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Returns an {@code CacheOptional} describing the specified value, if
-	 * non-null, otherwise returns an empty {@code CacheOptional}.
+	 * Returns an {@code CacheOptional} describing the specified value, if non-null,
+	 * otherwise returns an empty {@code CacheOptional}.
 	 *
 	 * @param <T>
 	 *            the class of the value
 	 * @param value
 	 *            the possibly-null value to describe
-	 * @return an {@code CacheOptional} with a present value if the specified
-	 *         value is non-null, otherwise an empty {@code CacheOptional}
+	 * @return an {@code CacheOptional} with a present value if the specified value
+	 *         is non-null, otherwise an empty {@code CacheOptional}
 	 */
 	public static <T> CacheOptional<T> ofNullable(T value) {
 		return value == null ? empty() : of(value);
@@ -168,8 +166,8 @@ public class CacheOptional<T> {
 	 *
 	 * @param obj
 	 *            an object to be tested for equality
-	 * @return {code true} if the other object is "equal to" this object
-	 *         otherwise {@code false}
+	 * @return {code true} if the other object is "equal to" this object otherwise
+	 *         {@code false}
 	 */
 	@Override
 	public boolean equals(Object obj) {
@@ -190,15 +188,15 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * If a value is present, and the value matches the given predicate, return
-	 * an {@code CacheOptional} describing the value, otherwise return an empty
+	 * If a value is present, and the value matches the given predicate, return an
+	 * {@code CacheOptional} describing the value, otherwise return an empty
 	 * {@code CacheOptional}.
 	 *
 	 * @param predicate
 	 *            a predicate to apply to the value, if present
 	 * @return an {@code CacheOptional} describing the value of this
-	 *         {@code CacheOptional} if a value is present and the value matches
-	 *         the given predicate, otherwise an empty {@code CacheOptional}
+	 *         {@code CacheOptional} if a value is present and the value matches the
+	 *         given predicate, otherwise an empty {@code CacheOptional}
 	 * @throws NullPointerException
 	 *             if the predicate is null
 	 */
@@ -215,19 +213,19 @@ public class CacheOptional<T> {
 	/**
 	 * If a value is present, apply the provided {@code CacheOptional}-bearing
 	 * mapping function to it, return that result, otherwise return an empty
-	 * {@code CacheOptional}. This method is similar to {@link #map(Function)},
-	 * but the provided mapper is one whose result is already an
-	 * {@code CacheOptional}, and if invoked, {@code flatMap} does not wrap it
-	 * with an additional {@code CacheOptional}.
+	 * {@code CacheOptional}. This method is similar to {@link #map(Function)}, but
+	 * the provided mapper is one whose result is already an {@code CacheOptional},
+	 * and if invoked, {@code flatMap} does not wrap it with an additional
+	 * {@code CacheOptional}.
 	 *
 	 * @param <U>
 	 *            The type parameter to the {@code CacheOptional} returned by
 	 * @param mapper
-	 *            a mapping function to apply to the value, if present the
-	 *            mapping function
+	 *            a mapping function to apply to the value, if present the mapping
+	 *            function
 	 * @return the result of applying an {@code CacheOptional}-bearing mapping
-	 *         function to the value of this {@code CacheOptional}, if a value
-	 *         is present, otherwise an empty {@code CacheOptional}
+	 *         function to the value of this {@code CacheOptional}, if a value is
+	 *         present, otherwise an empty {@code CacheOptional}
 	 * @throws NullPointerException
 	 *             if the mapping function is null or returns a null result
 	 */
@@ -262,8 +260,8 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Returns the hash code value of the present value, if any, or 0 (zero) if
-	 * no value is present.
+	 * Returns the hash code value of the present value, if any, or 0 (zero) if no
+	 * value is present.
 	 *
 	 * @return hash code value of the present value or 0 if no value is present
 	 */
@@ -308,9 +306,9 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * If a value is present, apply the provided mapping function to it, and if
-	 * the result is non-null, return an {@code CacheOptional} describing the
-	 * result. Otherwise return an empty {@code CacheOptional}.
+	 * If a value is present, apply the provided mapping function to it, and if the
+	 * result is non-null, return an {@code CacheOptional} describing the result.
+	 * Otherwise return an empty {@code CacheOptional}.
 	 *
 	 * @apiNote This method supports post-processing on CacheOptional values,
 	 *          without the need to explicitly check for a return status. For
@@ -325,20 +323,20 @@ public class CacheOptional<T> {
 	 *                       .findFirst()
 	 *                       .map(name -> new FileInputStream(name));
 	 * }
-	 * 			</pre>
+	 *          </pre>
 	 *
-	 *          Here, {@code findFirst} returns an
-	 *          {@code CacheOptional<String>}, and then {@code map} returns an
-	 *          {@code CacheOptional<FileInputStream>} for the desired file if
-	 *          one exists.
+	 *          Here, {@code findFirst} returns an {@code CacheOptional<String>},
+	 *          and then {@code map} returns an
+	 *          {@code CacheOptional<FileInputStream>} for the desired file if one
+	 *          exists.
 	 *
 	 * @param <U>
 	 *            The type of the result of the mapping function
 	 * @param mapper
 	 *            a mapping function to apply to the value, if present
-	 * @return an {@code CacheOptional} describing the result of applying a
-	 *         mapping function to the value of this {@code CacheOptional}, if a
-	 *         value is present, otherwise an empty {@code CacheOptional}
+	 * @return an {@code CacheOptional} describing the result of applying a mapping
+	 *         function to the value of this {@code CacheOptional}, if a value is
+	 *         present, otherwise an empty {@code CacheOptional}
 	 * @throws NullPointerException
 	 *             if the mapping function is null
 	 */
@@ -356,8 +354,7 @@ public class CacheOptional<T> {
 	 * Return the value if present, otherwise return {@code other}.
 	 *
 	 * @param other
-	 *            the value to be returned if there is no value present, may be
-	 *            null
+	 *            the value to be returned if there is no value present, may be null
 	 * @return the value, if present, otherwise {@code other}
 	 */
 	public T orElse(T other) {
@@ -369,12 +366,11 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Return the value if present, otherwise invoke {@code other} and return
-	 * the result of that invocation.
+	 * Return the value if present, otherwise invoke {@code other} and return the
+	 * result of that invocation.
 	 *
 	 * @param other
-	 *            a {@code Supplier} whose result is returned if no value is
-	 *            present
+	 *            a {@code Supplier} whose result is returned if no value is present
 	 * @return the value if present otherwise the result of {@code other.get()}
 	 * @throws NullPointerException
 	 *             if value is not present and {@code other} is null
@@ -388,8 +384,8 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Return the contained value, if present, otherwise throw an exception to
-	 * be created by the provided supplier.
+	 * Return the contained value, if present, otherwise throw an exception to be
+	 * created by the provided supplier.
 	 *
 	 * @apiNote A method reference to the exception constructor with an empty
 	 *          argument list can be used as the supplier. For example,
@@ -424,13 +420,13 @@ public class CacheOptional<T> {
 	}
 
 	/**
-	 * Returns a non-empty string representation of this CacheOptional suitable
-	 * for debugging. The exact presentation format is unspecified and may vary
-	 * between implementations and versions.
+	 * Returns a non-empty string representation of this CacheOptional suitable for
+	 * debugging. The exact presentation format is unspecified and may vary between
+	 * implementations and versions.
 	 *
 	 * @implSpec If a value is present the result must include its string
-	 *           representation in the result. Empty and present CacheOptionals
-	 *           must be unambiguously differentiable.
+	 *           representation in the result. Empty and present CacheOptionals must
+	 *           be unambiguously differentiable.
 	 *
 	 * @return the string representation of this instance
 	 */
