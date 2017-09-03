@@ -18,11 +18,15 @@ import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.configuration.Filter;
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.configuration.OWLib;
 
 public class FontUtils {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FontUtils.class);
 
 	private static void and(BufferedImage destImage, BufferedImage sourceImage, Color newColor,
 			boolean reddenOutOfBoundAreas) {
@@ -71,7 +75,7 @@ public class FontUtils {
 				if (inputImages.get(n) == null)
 					inputImages.put(n, new LinkedList<>());
 				inputImages.get(n).add(b);
-				Helper.info(FontUtils.class, n + ": " + path.getFileName());
+				LOGGER.info(n + ": " + path.getFileName());
 			}
 			List<int[]> filterPoints = new LinkedList<>();
 			Set<String> glyphs = inputImages.keySet();
@@ -131,8 +135,7 @@ public class FontUtils {
 	}
 
 	public static void main(String[] args) {
-		System.out.println("Working Directory = " +
-	              System.getProperty("user.dir"));
+		LOGGER.debug("Working Directory = " + System.getProperty("user.dir"));
 		mergeSecondaryFontTestFiles();
 		mergePrimaryFontTestFiles();
 	}
@@ -163,8 +166,8 @@ public class FontUtils {
 					g.fillRect(0, 0, target.getWidth(), target.getHeight());
 					g.drawImage(source, 0, 0, null);
 					g.dispose();
-					ImageIO.write(target,
-							"PNG", Paths
+					ImageIO.write(
+							target, "PNG", Paths
 									.get("lib", "owdata", "ocr_primary_font_2",
 											String.valueOf(c.getFileName().toString().charAt(0)), "template.png")
 									.toFile());
@@ -200,8 +203,8 @@ public class FontUtils {
 					g.fillRect(0, 0, target.getWidth(), target.getHeight());
 					g.drawImage(source, 0, 0, null);
 					g.dispose();
-					ImageIO.write(target,
-							"PNG", Paths
+					ImageIO.write(
+							target, "PNG", Paths
 									.get("lib", "owdata", "ocr_secondary_font",
 											String.valueOf(c.getFileName().toString().charAt(0)), "template.png")
 									.toFile());

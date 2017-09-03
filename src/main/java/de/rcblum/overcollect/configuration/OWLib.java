@@ -18,11 +18,14 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.data.OWMatch;
 import de.rcblum.overcollect.extract.ocr.Glyph;
-import de.rcblum.overcollect.utils.Helper;
 
 public class OWLib {
+	private static final Logger LOGGER = LoggerFactory.getLogger(OWLib.class);
 
 	static {
 		if (System.getProperties().getProperty("owcollect.temp.dir") == null)
@@ -90,13 +93,13 @@ public class OWLib {
 	private Map<String, OWMatch> matches = null;
 
 	private Properties config = null;
-	
+
 	private List<String> accounts = null;
-	
+
 	private String selectedAccount = null;
-	
+
 	private List<String> seasons = null;
-	
+
 	private String selectedSeason = null;
 
 	private OWLib() {
@@ -162,7 +165,7 @@ public class OWLib {
 	}
 
 	public String getDebugDir() {
-		String ddirName = getString("debug.dir",  "debug");
+		String ddirName = getString("debug.dir", "debug");
 		Path ddir = Paths.get(ddirName);
 		if (!Files.exists(ddir)) {
 			try {
@@ -171,7 +174,7 @@ public class OWLib {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return ddirName;
 	}
 
@@ -256,16 +259,18 @@ public class OWLib {
 		List<Glyph> g = getSecondaryFontGlyphs();
 		return g.size() > 0 ? g.get(0).getBaseFontSize() : 57;
 	}
-	
+
 	public List<Glyph> getSecondaryFontGlyphs() {
-		return this.items.get("ocr_secondary_font") != null ? this.items.get("ocr_secondary_font").values().stream()
-				.filter(i -> i.hasGlyph()).map(i -> i.getGlyph()).collect(Collectors.toList()) : null;
+		return this.items.get("ocr_secondary_font") != null
+				? this.items.get("ocr_secondary_font").values().stream().filter(i -> i.hasGlyph())
+						.map(i -> i.getGlyph()).collect(Collectors.toList())
+				: null;
 	}
-	
+
 	public String getString(String key, String defaultString) {
 		return this.config.getProperty(key) != null ? this.config.getProperty(key) : defaultString;
 	}
-	
+
 	public List<String> getSupportedScreenResolutions() {
 		return this.supportedScreenResolutions;
 	}
@@ -278,12 +283,16 @@ public class OWLib {
 		File[] resolutionFolders = this.libPath.toFile().listFiles();
 		Arrays.sort(resolutionFolders);
 		// load accounts
-		this.accounts = new LinkedList<>(this.config.getProperty("accounts") != null ? Arrays.asList(this.config.getProperty("accounts").split(",")) : new LinkedList<>());
+		this.accounts = new LinkedList<>(this.config.getProperty("accounts") != null
+				? Arrays.asList(this.config.getProperty("accounts").split(","))
+				: new LinkedList<>());
 		this.selectedAccount = this.config.getProperty("activeAccount");
 		// Load Seasons
-		this.seasons = new LinkedList<>(this.config.getProperty("seasons") != null ? Arrays.asList(this.config.getProperty("seasons").split(",")) : new LinkedList<>());
+		this.seasons = new LinkedList<>(this.config.getProperty("seasons") != null
+				? Arrays.asList(this.config.getProperty("seasons").split(","))
+				: new LinkedList<>());
 		this.selectedSeason = this.config.getProperty("activeSeason");
-		
+
 		// Find all resolutions
 		for (File res : resolutionFolders) {
 			if (res.isDirectory()) {
@@ -311,7 +320,7 @@ public class OWLib {
 		this.matches = new HashMap<>();
 		File[] matchFiles = Paths.get(System.getProperties().getProperty("owcollect.data.dir")).toFile().listFiles();
 		for (File match : matchFiles) {
-			Helper.info(this.getClass(), match);
+			LOGGER.info("match: {}", match);
 			OWMatch m = OWMatch.fromJsonFile(match);
 			if (m != null) {
 				this.matches.put(m.getMatchId(), m);
@@ -338,7 +347,7 @@ public class OWLib {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void setActiveAccount(String account) {
@@ -353,8 +362,9 @@ public class OWLib {
 		if (this.seasons.size() == 0) {
 			for (OWMatch m : this.matches.values()) {
 				// Fix older versions with no season
-				if (m.getSeason() == null && season!= null) {
-					Path match = Paths.get(System.getProperties().getProperty("owcollect.data.dir"), m.getMatchId() + ".json");
+				if (m.getSeason() == null && season != null) {
+					Path match = Paths.get(System.getProperties().getProperty("owcollect.data.dir"),
+							m.getMatchId() + ".json");
 					m.setSeason(season);
 					OWMatch.toJsonFile(m, match.toFile());
 				}

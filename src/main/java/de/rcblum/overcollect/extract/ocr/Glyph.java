@@ -10,18 +10,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.rcblum.overcollect.configuration.Filter;
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.configuration.OWLib;
-import de.rcblum.overcollect.utils.Helper;
 
 public class Glyph {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(Glyph.class);
+
 	/**
-	 * Creates a glyph from a filter. Positive pixels are from Black dots,
-	 * negatives from all other
+	 * Creates a glyph from a filter. Positive pixels are from Black dots, negatives
+	 * from all other
 	 * 
 	 * @param character
 	 * @param filter
@@ -85,17 +90,17 @@ public class Glyph {
 	public static void save(String libPath, String resolution, String alias, Glyph glyph) throws IOException {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Path glyphFile = Paths.get(libPath, resolution, alias, "glyph.json");
-		Helper.info(Glyph.class, glyphFile.toString());
+		LOGGER.info(glyphFile.toString());
 		String text = gson.toJson(glyph);
 		Files.write(glyphFile, text.getBytes("UTF-8"));
 	}
+
 	private static void testGlyph(String category, String itemId) {
-		Helper.info(Glyph.class, "Category: " + category + ", glyph: " + itemId);
+		LOGGER.info("Category: " + category + ", glyph: " + itemId);
 		Glyph g2 = OWLib.getInstance().getItem(category, itemId).getGlyph();
 		BufferedImage b = OWLib.getInstance().getItem(category, itemId).getTemplate();
-		Helper.info(Glyph.class, "    Matched: " + g2.match(b, Color.BLACK, 0.06f) + ", Percentage: "
+		LOGGER.info("    Matched: " + g2.match(b, Color.BLACK, 0.06f) + ", Percentage: "
 				+ Math.round(g2.matchPercentage(b, Color.BLACK, 0.06f) * 100));
-		System.out.println();
 	}
 
 	private int baseFontSize = 55;
@@ -193,7 +198,7 @@ public class Glyph {
 				int x = Math.round(negativePixels[i][0]);
 				int y = Math.round(negativePixels[i][1]);
 				if (image.getWidth() <= x || image.getHeight() <= y) {
-					//Helper.info(this.getClass(), "Outofbounds pixel");
+					// LOGGER.info( "Outofbounds pixel");
 					continue;
 				}
 				int argb = image.getRGB(x, y);
@@ -202,7 +207,7 @@ public class Glyph {
 				int b = (argb >> 0) & 0xFF;
 				if ((Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 						&& Math.abs((bPrim - b) / 255.0f) <= tolerance)) {
-					//Helper.info(this.getClass(), "Negative misses " + x + ", " + y);
+					// LOGGER.info( "Negative misses " + x + ", " + y);
 					continue;
 				}
 				ok++;

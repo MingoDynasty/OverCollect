@@ -24,10 +24,12 @@ import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.configuration.Filter;
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.configuration.OWLib;
-import de.rcblum.overcollect.utils.Helper;
 
 public class JFilterTest extends JFrame {
 
@@ -35,6 +37,9 @@ public class JFilterTest extends JFrame {
 	 * 
 	 */
 	private static final long serialVersionUID = 4242809696601088803L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JFilterTest.class);
+
 	/**
 	 * Launch the application.
 	 */
@@ -51,6 +56,7 @@ public class JFilterTest extends JFrame {
 			}
 		});
 	}
+
 	private JPanel contentPane;
 	private JTable tItems;
 
@@ -160,13 +166,13 @@ public class JFilterTest extends JFrame {
 							int rows = tItems.getRowCount();
 							int columnCount = tItems.getColumnCount();
 							SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-							Helper.info(this.getClass(), "Start: " + sdf.format(Calendar.getInstance().getTime()));
+							LOGGER.info("Start: " + sdf.format(Calendar.getInstance().getTime()));
 							for (int i = 0; i < rows; i++) {
 								for (int j = 1; j < columnCount; j++) {
 									if (!"--".equals(model.getValueAt(i, j))) {
-										Helper.info(this.getClass(), "Source: " + model.getValueAt(i, 0));
-										Helper.info(this.getClass(), "Target: " + model.getColumnName(j));
-										Helper.info(this.getClass(), "");
+										LOGGER.info("Source: " + model.getValueAt(i, 0));
+										LOGGER.info("Target: " + model.getColumnName(j));
+										LOGGER.info("");
 										OWItem sourceItem = lib.getItem(res, (String) model.getValueAt(i, 0));
 										OWItem targetItem = lib.getItem(res, model.getColumnName(j));
 										if (sourceItem.hasFilter()) {
@@ -182,7 +188,7 @@ public class JFilterTest extends JFrame {
 									}
 								}
 							}
-							Helper.info(this.getClass(), "End: " + sdf.format(Calendar.getInstance().getTime()));
+							LOGGER.info("End: " + sdf.format(Calendar.getInstance().getTime()));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

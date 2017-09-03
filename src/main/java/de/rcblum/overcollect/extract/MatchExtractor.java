@@ -25,6 +25,9 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.MemoryCacheImageOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 
 import de.rcblum.overcollect.collect.listener.owmatch.OWMatchEvent;
@@ -39,9 +42,11 @@ import de.rcblum.overcollect.extract.ocr.Glyph;
 import de.rcblum.overcollect.utils.Helper;
 
 public class MatchExtractor implements Runnable, OWMatchListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(MatchExtractor.class);
+
 	/**
-	 * Subclass that processes the match screenshots into a OWMatch and saves it
-	 * as a JSON String on disk.
+	 * Subclass that processes the match screenshots into a OWMatch and saves it as
+	 * a JSON String on disk.
 	 * 
 	 * @author Roland von Werden
 	 *
@@ -81,14 +86,14 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 
 		private ScreenExtract createScreenExtract(Path imagePath, Path ocrConfig) {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				Helper.debug(this.getClass(), "Extracting: " +imagePath.getFileName().toString());
+				LOGGER.debug("Extracting: " + imagePath.getFileName().toString());
 			if (Files.exists(imagePath) && Files.exists(ocrConfig))
 				try {
 					BufferedImage image = ImageIO.read(imagePath.toFile());
 					String text = new String(Files.readAllBytes(ocrConfig), StandardCharsets.UTF_8);
 					OCRConfiguration config = g.fromJson(text, OCRConfiguration.class);
 					if (OWLib.getInstance().getBoolean("debug.extraction"))
-						Helper.debug(this.getClass(), "OCR-Configuration.pixelDetectionCount: " + config.pixelDetectionCount);
+						LOGGER.debug("OCR-Configuration.pixelDetectionCount: " + config.pixelDetectionCount);
 					ScreenExtract sc = new ScreenExtract(image, config);
 					return sc;
 				} catch (IOException e) {
@@ -98,7 +103,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 		}
 
 		private void readStats(Path hero) {
-			Helper.info(this.getClass(), "Hero: " + hero);
+			LOGGER.info("Hero: " + hero);
 			String filename = hero.getFileName().toString().replace(".png", "");
 			ScreenExtract sc = null;
 			if (Files.exists(hero) && Files.exists(hero.getParent().resolve(filename + ".ocr")))
@@ -128,7 +133,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				}
 				this.match.addCharacterStats(cStats);
 			} else {
-				Helper.info(this.getClass(), "..Stats could not be extracted, files missing");
+				LOGGER.info("..Stats could not be extracted, files missing");
 			}
 		}
 
@@ -136,7 +141,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 		public void run() {
 
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				Helper.debug(this.getClass(), "Extracting match: " + matchPath.getFileName().toString() + "[" + matchPath.toAbsolutePath().toString() +"]");
+				LOGGER.debug("Extracting match: " + matchPath.getFileName().toString() + "["
+						+ matchPath.toAbsolutePath().toString() + "]");
 			// Extract time and map
 			Properties properties = new Properties();
 			try (InputStream inD = Files.newInputStream(this.matchPath.resolve("data.properties"))) {
@@ -147,7 +153,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				this.match.setSeason(properties.getProperty("season"));
 				this.match.setStacksize(properties.getProperty("stacksize") != null
 						&& Helper.isInteger(properties.getProperty("stacksize"))
-								? Helper.toInteger(properties.getProperty("stacksize"), 1) : 1);
+								? Helper.toInteger(properties.getProperty("stacksize"), 1)
+								: 1);
 				this.match.setMap(
 						properties.getProperty("map") != null ? properties.getProperty("map").replace("_", " ") : null);
 			} catch (IOException e) {
@@ -190,7 +197,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 						this.matchPath.resolve("_sr_screen.ocr"));
 			if (sc != null) {
 				this.match.setSr(sc.getValue("sr"));
-				Helper.info(this.getClass(), "SR: " + sc.getValue("sr"));
+				LOGGER.info("SR: " + sc.getValue("sr"));
 				this.writeImage(this.imagePath.resolve("sr.png"), sc.getImage("sr"));
 				for (Map.Entry<BufferedImage, Glyph> entry : sc.nohitPrimary.entrySet()) {
 					fireExtractionError(entry.getKey(), entry.getValue(), OWMatchExtractionListener.StatType.PRIMARY);
@@ -221,12 +228,12 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			} catch (IOException e) {
 
 				if (OWLib.getInstance().getBoolean("debug.extraction"))
-					Helper.debug(this.getClass(), "Error writing match to file: " +e.getMessage());
+					LOGGER.debug("Error writing match to file: " + e.getMessage());
 				e.printStackTrace();
 			}
 
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				Helper.debug(this.getClass(), "Done extracting match: " + matchPath.getFileName().toString());
+				LOGGER.debug("Done extracting match: " + matchPath.getFileName().toString());
 		}
 
 		private void writeImage(Path imagePath, BufferedImage i) {
@@ -234,7 +241,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				writePNG(i, os);
 				// ImageIO.write(i, "JPG", );
 			} catch (IOException e) {
-				Helper.info(this.getClass(), "Error writing image: " + imagePath.toAbsolutePath().toString());
+				LOGGER.info("Error writing image: " + imagePath.toAbsolutePath().toString());
 				e.printStackTrace();
 			}
 		}
@@ -260,8 +267,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 	private Path matchRoot = null;
 
 	/**
-	 * Image root where all extracted Images will be saved for qs if some values
-	 * are wrong.
+	 * Image root where all extracted Images will be saved for qs if some values are
+	 * wrong.
 	 */
 	private Path imageRoot = null;
 
@@ -297,8 +304,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 	 * @param matchRoot
 	 *            Rootfolder where all matches a saved as raws
 	 * @param imageRoot
-	 *            Image root where all extracted Images will be saved for qs if
-	 *            some values are wrong.
+	 *            Image root where all extracted Images will be saved for qs if some
+	 *            values are wrong.
 	 * @param dataRoot
 	 *            Root where all compiled match data will be stored
 	 * @throws IOException
@@ -328,7 +335,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 	private void addMatch(Path matchPath) {
 		try {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				Helper.debug(this.getClass(), "Adding match to be extraced: " + matchPath.getFileName().toString() + "[" + matchPath.toAbsolutePath().toString() +"]");
+				LOGGER.debug("Adding match to be extraced: " + matchPath.getFileName().toString() + "["
+						+ matchPath.toAbsolutePath().toString() + "]");
 			Path imagePath = this.imageRoot.resolve(matchPath.getFileName().toString());
 			if (!Files.exists(imagePath))
 				Files.createDirectories(imagePath);
@@ -363,8 +371,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 
 	@Override
 	public void matchEnded(OWMatchEvent e) {
-		Helper.info(this.getClass(), this.getClass().toString() + " match ended: " + e.id.toString() + ", " + e.item.getItemName()
-				+ ", " + e.type);
+		LOGGER.info(this.getClass().toString() + " match ended: " + e.id.toString() + ", " + e.item.getItemName() + ", "
+				+ e.type);
 		if (e.type != OWMatchEvent.Type.END_ABORTED)
 			this.events.add(e);
 	}

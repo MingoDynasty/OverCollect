@@ -19,15 +19,18 @@ import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.configuration.OWLib;
 import de.rcblum.overcollect.data.OWCharacterStats;
 import de.rcblum.overcollect.data.OWMatch;
 import de.rcblum.overcollect.data.OWMatch.Result;
-import de.rcblum.overcollect.utils.Helper;
 
 public class XSSFExporter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(XSSFExporter.class);
+
 	public static void main(String[] args) {
 		XSSFExporter eExport = new XSSFExporter();
 		eExport.generateMatchSheet();
@@ -45,7 +48,8 @@ public class XSSFExporter {
 	private XSSFWorkbook workbook = null;
 
 	public XSSFExporter() {
-		this.matches = OWLib.getInstance().getMatches().stream().filter(m -> m.getAccount() == null || m.getAccount().equals(OWLib.getInstance().getActiveAccount()))
+		this.matches = OWLib.getInstance().getMatches().stream()
+				.filter(m -> m.getAccount() == null || m.getAccount().equals(OWLib.getInstance().getActiveAccount()))
 				.sorted((m1, m2) -> m1.getStartTime().compareTo(m2.getStartTime())).collect(Collectors.toList());
 		this.heroes = OWLib.getInstance().getHeroes();
 		this.maps = OWLib.getInstance().getMaps();
@@ -56,7 +60,7 @@ public class XSSFExporter {
 		String heroName = hero.getItemName();
 		Set<String> secondaryStats = hero.getOCRConfiguration().secondaryValues.keySet();
 		XSSFSheet sheet = null;
-		Helper.info(this.getClass(), "Hero: " + hero.getItemName() + " ");
+		LOGGER.info("Hero: " + hero.getItemName() + " ");
 		List<OWMatch> heroMatches = this.matches;// .stream().filter(m ->
 													// m.getCharacterStats().stream().anyMatch(j
 													// ->
@@ -65,8 +69,8 @@ public class XSSFExporter {
 				.filter(m -> m.getCharacterStats().stream().anyMatch(j -> heroName.equals(j.getName())))
 				.collect(Collectors.toList());
 		;
-		Helper.info(this.getClass(), "Matches: " + foundMatches.size());
-		Helper.info(this.getClass(), "");
+		LOGGER.info("Matches: " + foundMatches.size());
+		LOGGER.info("");
 		if (foundMatches.size() > 0) {
 			sheet = this.workbook.createSheet(heroName + "_data");
 			int rowIndex = 0;
@@ -179,8 +183,9 @@ public class XSSFExporter {
 					c = row.createCell(cellIndex++);
 					c.setCellValue(match.getSr());
 					c = row.createCell(cellIndex++);
-					c.setCellValue(match.getSr() - (previousMatch != null && previousMatch.getSr() != -1
-							? previousMatch.getSr() : match.getSr()));
+					c.setCellValue(match.getSr()
+							- (previousMatch != null && previousMatch.getSr() != -1 ? previousMatch.getSr()
+									: match.getSr()));
 					c = row.createCell(cellIndex++);
 					c.setCellValue(match.getMatchId());
 				}
@@ -255,7 +260,7 @@ public class XSSFExporter {
 	public void save(Path path) {
 		try (OutputStream out = Files.newOutputStream(path)) {
 			workbook.write(out);
-			Helper.info(this.getClass(), "Excel written successfully..");
+			LOGGER.info("Excel written successfully..");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {

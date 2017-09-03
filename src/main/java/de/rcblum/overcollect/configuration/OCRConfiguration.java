@@ -10,18 +10,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import de.rcblum.overcollect.utils.Helper;
-
 public class OCRConfiguration {
+	private static final Logger LOGGER = LoggerFactory.getLogger(OCRConfiguration.class);
 
 	public static void save(String libPath, String resolution, String alias, OCRConfiguration ocr)
 			throws UnsupportedEncodingException, IOException {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Path ocrFile = Paths.get(libPath, resolution, alias, "ocr_fields.json");
-		Helper.info(OCRConfiguration.class, ocrFile.toString());
+		LOGGER.info(ocrFile.toString());
 		String text = gson.toJson(ocr);
 		Files.write(ocrFile, text.getBytes("UTF-8"));
 	}
@@ -32,10 +34,10 @@ public class OCRConfiguration {
 	 * Fontsize in pixel of the primary values
 	 */
 	public final int fontSize;
-	
+
 	/**
-	 * Amount of pixels that is needed to recognize a character on screen.
-	 * Fix for Master level player. Only used on maps
+	 * Amount of pixels that is needed to recognize a character on screen. Fix for
+	 * Master level player. Only used on maps
 	 */
 	public final int pixelDetectionCount;
 
@@ -72,8 +74,7 @@ public class OCRConfiguration {
 	public final int skewTrim;
 
 	public final double skewSecondary;
-	
-	
+
 	public final int skewSecondaryTrim;
 
 	/**
@@ -85,7 +86,8 @@ public class OCRConfiguration {
 
 	public OCRConfiguration(Map<String, int[]> values, Map<String, int[]> secondaryValues, int[] dataFieldSize,
 			int[] secondaryDataFieldSize, int fontSize, int secondaryFontSize, double skew, double skewSecondary,
-			int skewTrim, int skewSecondaryTrim, boolean doRecolor, int[] dataColor, int[] secondaryDataColor, int pixelDetectionCount) {
+			int skewTrim, int skewSecondaryTrim, boolean doRecolor, int[] dataColor, int[] secondaryDataColor,
+			int pixelDetectionCount) {
 		super();
 		this.dataFieldSize = dataFieldSize;
 		this.secondaryDataFieldSize = secondaryDataFieldSize;
@@ -104,8 +106,8 @@ public class OCRConfiguration {
 	}
 
 	/**
-	 * Returns the color of the primary font, if set. if not set, it returns
-	 * black if doRecolor is set, else white.
+	 * Returns the color of the primary font, if set. if not set, it returns black
+	 * if doRecolor is set, else white.
 	 * 
 	 * @return
 	 */
@@ -158,8 +160,8 @@ public class OCRConfiguration {
 			secondaryValues.put(key, nxy);
 		}
 		return new OCRConfiguration(values, secondaryValues, dataFieldSize, secondaryDataFieldSize, fontSize,
-				secondaryFontSize, skew, skewSecondary, skewTrim, skewSecondaryTrim, doRecolor,
-				dataColor, secondaryDataColor, this.pixelDetectionCount);
+				secondaryFontSize, skew, skewSecondary, skewTrim, skewSecondaryTrim, doRecolor, dataColor,
+				secondaryDataColor, this.pixelDetectionCount);
 	}
 
 	public String toJson() {

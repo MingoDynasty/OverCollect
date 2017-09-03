@@ -6,12 +6,14 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.capture.listener.ImageListener;
 import de.rcblum.overcollect.collect.listener.OWItemImageListener;
 import de.rcblum.overcollect.configuration.Filter;
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.configuration.OWLib;
-import de.rcblum.overcollect.utils.Helper;
 
 /**
  * FilterEnginge will test all captured screenshots against the configured
@@ -26,6 +28,7 @@ import de.rcblum.overcollect.utils.Helper;
  *
  */
 public class FilterEngine implements ImageListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(FilterEngine.class);
 
 	/**
 	 * Task tah will check the screenshot against the filters of the appropriate
@@ -49,7 +52,7 @@ public class FilterEngine implements ImageListener {
 			for (OWItem item : dropItems) {
 				if (item.hasFilter() && item.getFilter().match(i)) {
 					if (OWLib.getInstance().getBoolean("debug.filter"))
-						Helper.debug(this.getClass(), "Dropping screenshot: " + item.getItemName());
+						LOGGER.debug("Dropping screenshot: " + item.getItemName());
 					return;
 				}
 			}
@@ -59,7 +62,7 @@ public class FilterEngine implements ImageListener {
 						fireImage(i, item);
 						lastFilter = item.getItemName();
 						if (OWLib.getInstance().getBoolean("debug.filter"))
-							Helper.debug(this.getClass(), "Filter matched: " + item.getItemName());
+							LOGGER.debug("Filter matched: " + item.getItemName());
 					}
 				}
 			}
@@ -84,7 +87,7 @@ public class FilterEngine implements ImageListener {
 		if (OWLib.getInstance().supportScreenResolution(i.getWidth(), i.getHeight())) {
 			worker.submit(new FilterTask(i));
 		} else {
-			Helper.info(this.getClass(), "Image resolution " + i.getWidth() + " x " + i.getHeight() + " not supported");
+			LOGGER.info("Image resolution " + i.getWidth() + " x " + i.getHeight() + " not supported");
 		}
 	}
 
@@ -104,8 +107,7 @@ public class FilterEngine implements ImageListener {
 	 * @param i
 	 *            Image that matched the filter
 	 * @param item
-	 *            {@link OWItem} that contains the filter which matched the
-	 *            image.
+	 *            {@link OWItem} that contains the filter which matched the image.
 	 */
 	private void fireImage(BufferedImage i, OWItem item) {
 		for (OWItemImageListener owItemImageListener : listeners) {

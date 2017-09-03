@@ -7,10 +7,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
-import de.rcblum.overcollect.utils.Helper;
 
 /**
  * Each Screenshot must pass one of the filters to may be used.
@@ -19,10 +20,12 @@ import de.rcblum.overcollect.utils.Helper;
  *
  */
 public class Filter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(Filter.class);
+
 	public static void save(String libPath, String resolution, String alias, Filter filter) throws IOException {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Path filterFile = Paths.get(libPath, resolution, alias, "filter.json");
-		Helper.info(Filter.class, filterFile.toString());
+		LOGGER.info(filterFile.toString());
 		String text = gson.toJson(filter);
 		Files.write(filterFile, text.getBytes("UTF-8"));
 	}
@@ -58,13 +61,13 @@ public class Filter {
 			}
 			Color c = new Color(i.getRGB(points[cpoint][0], points[cpoint][1]), true);
 			// Test R G B
-			// Helper.info(this.getClass(), "R diff: " +
+			// LOGGER.info( "R diff: " +
 			// Math.round(100*(Math.abs(points[cpoint][2] -
 			// c.getRed())/255.0)));
-			// Helper.info(this.getClass(), "B diff: " +
+			// LOGGER.info( "B diff: " +
 			// Math.round(100*(Math.abs(points[cpoint][3] -
 			// c.getGreen())/255.0)));
-			// Helper.info(this.getClass(), "G diff: " +
+			// LOGGER.info( "G diff: " +
 			// Math.round(100*(Math.abs(points[cpoint][4] -
 			// c.getBlue())/255.0)));
 			matches = matches && Math.abs(points[cpoint][2] - c.getRed()) <= toleranceVal

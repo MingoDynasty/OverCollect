@@ -23,9 +23,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ColorUIResource;
 
-import de.rcblum.overcollect.utils.Helper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UiStatics {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(UiStatics.class);
 
 	public static class OWButton extends JButton {
 
@@ -84,6 +87,7 @@ public class UiStatics {
 			this.pressedBackgroundColor = pressedBackgroundColor;
 		}
 	}
+
 	public static final Font OW_FONT_NORMAL = getFont("fonts" + File.separator + "koverwatch.ttf",
 			"http://us.battle.net/forums/static/fonts/koverwatch/koverwatch.ttf");
 
@@ -105,14 +109,15 @@ public class UiStatics {
 	public static final Color TEXT_COLOR_DEFEAT = new Color(200, 0, 19);
 
 	public static final Color TEXT_COLOR_DRAW = new Color(255, 220, 0);
-	
+
 	static {
 		UIManager.put("ComboBox.background", new ColorUIResource(COLOR_BACKGROUND));
 		UIManager.put("ComboBox.buttonBackground", new ColorUIResource(COLOR_BACKGROUND));
 		UIManager.put("ComboBox.buttonBackground", new ColorUIResource(COLOR_BACKGROUND));
 		UIManager.put("ComboBox.selectionBackground", new ColorUIResource(COLOR_BACKGROUND.brighter()));
 		UIManager.put("ComboBox.foreground", new ColorUIResource(TEXT_DESCRIPTION));
-		//UIManager.put("ComboBox.selectionForeground", new ColorUIResource(Color.WHITE));
+		// UIManager.put("ComboBox.selectionForeground", new
+		// ColorUIResource(Color.WHITE));
 	}
 
 	public static JButton createButton(String caption) {
@@ -153,7 +158,7 @@ public class UiStatics {
 			fontFolder.mkdir();
 		File lfont = new File(localFontFile);
 		if (!lfont.exists()) {
-			Helper.info(UiStatics.class, "Downloading Font " + urlString);
+			LOGGER.info("Downloading Font " + urlString);
 			try (FileOutputStream outputStream = new FileOutputStream(localFontFile)) {
 				URL owFontNormal = new URL(urlString);
 				ReadableByteChannel rbcFont = Channels.newChannel(owFontNormal.openStream());
@@ -164,9 +169,9 @@ public class UiStatics {
 				while ((bytesRead = inputStream.read(buffer)) != -1) {
 					outputStream.write(buffer, 0, bytesRead);
 				}
-				Helper.info(UiStatics.class, "Done downloading Fonts");
+				LOGGER.info("Done downloading Fonts");
 			} catch (IOException e1) {
-				Helper.info(UiStatics.class, "Error downloading font:");
+				LOGGER.info("Error downloading font:");
 				e1.printStackTrace();
 			}
 		}

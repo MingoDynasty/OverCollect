@@ -20,6 +20,9 @@ import java.util.Objects;
 import javax.imageio.ImageIO;
 import javax.swing.Timer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.capture.listener.ImageListener;
 import de.rcblum.overcollect.capture.listener.ImageSource;
 import de.rcblum.overcollect.configuration.OWItem;
@@ -27,6 +30,7 @@ import de.rcblum.overcollect.configuration.OWLib;
 import de.rcblum.overcollect.utils.Helper;
 
 public class RobotCaptureEngine implements ActionListener, ImageSource {
+	private static final Logger LOGGER = LoggerFactory.getLogger(RobotCaptureEngine.class);
 
 	private static GraphicsDevice[] screens = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
 
@@ -46,7 +50,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		this.captureInterval = OWLib.getInstance().getInteger("captureInterval", 1000);
 		// this.screen = Objects.requireNonNull(screen);
 		// this.r = new Robot(screen);
-		Helper.info((Class)this.getClass(), this.captureInterval);
+		LOGGER.info("captureInterval: {}", this.captureInterval);
 		t = new Timer(this.captureInterval, this);
 	}
 
@@ -75,9 +79,10 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 				try {
 					Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
 					if (!Files.exists(debugPath)) {
-							Files.createDirectories(debugPath);
+						Files.createDirectories(debugPath);
 					}
-					Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
+					Path debugFile = debugPath
+							.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
 					ImageIO.write(br, "PNG", debugFile.toFile());
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
@@ -87,8 +92,11 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see de.rcblum.overcollect.capture.ImageSource#addImageListener(de.rcblum.overcollect.capture.listener.ImageListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.rcblum.overcollect.capture.ImageSource#addImageListener(de.rcblum.
+	 * overcollect.capture.listener.ImageListener)
 	 */
 	@Override
 	public void addImageListener(ImageListener i) {
@@ -100,7 +108,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		OWLib lib = OWLib.getInstance();
 
 		// if (screenAutodetectCount%(this.captureInterval/100)==0) {
-		// Helper.info(this.getClass(), "Autodetecting
+		// LOGGER.info( "Autodetecting
 		// Overwatch["+Math.round(screenAutodetectCount/(this.captureInterval/1000.0))+"
 		// sec]...");
 		// }
@@ -125,7 +133,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 							|| itemMain.hasFilter() && itemMain.getFilter().match(br)) {
 						this.screen = screen;
 						this.r = robot;
-						Helper.info(this.getClass(), "Screen found");
+						LOGGER.info("Screen found");
 						break;
 					}
 				}
@@ -141,7 +149,9 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#getCaptureInterval()
 	 */
 	@Override
@@ -149,7 +159,9 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		return captureInterval;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#getResolution()
 	 */
 	@Override
@@ -157,7 +169,9 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		return this.screen.getDefaultConfiguration().getBounds();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#getScreen()
 	 */
 	@Override
@@ -165,7 +179,9 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		return screen;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#isRunning()
 	 */
 	@Override
@@ -173,15 +189,20 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		return this.t.isRunning();
 	}
 
-	/* (non-Javadoc)
-	 * @see de.rcblum.overcollect.capture.ImageSource#removeImageListener(de.rcblum.overcollect.capture.listener.ImageListener)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.rcblum.overcollect.capture.ImageSource#removeImageListener(de.rcblum.
+	 * overcollect.capture.listener.ImageListener)
 	 */
 	@Override
 	public void removeImageListener(ImageListener i) {
 		listeners.remove(i);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#setCaptureInterval(int)
 	 */
 	@Override
@@ -189,8 +210,11 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		this.captureInterval = captureInterval;
 	}
 
-	/* (non-Javadoc)
-	 * @see de.rcblum.overcollect.capture.ImageSource#setScreen(java.awt.GraphicsDevice)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.rcblum.overcollect.capture.ImageSource#setScreen(java.awt.GraphicsDevice)
 	 */
 	@Override
 	public void setScreen(GraphicsDevice screen) throws AWTException {
@@ -203,21 +227,25 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 			this.start();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#start()
 	 */
 	@Override
 	public void start() {
-		Helper.info(this.getClass(), "Start capture");
+		LOGGER.info("Start capture");
 		this.t.start();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.rcblum.overcollect.capture.ImageSource#stop()
 	 */
 	@Override
 	public void stop() {
-		Helper.info(this.getClass(), "Stop capture");
+		LOGGER.info("Stop capture");
 		this.t.stop();
 	}
 

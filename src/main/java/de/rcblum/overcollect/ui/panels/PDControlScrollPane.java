@@ -7,7 +7,8 @@ import java.awt.event.MouseWheelListener;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
-import de.rcblum.overcollect.utils.Helper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A JScrollPane that will bubble a mouse wheel scroll event to the parent
@@ -15,6 +16,8 @@ import de.rcblum.overcollect.utils.Helper;
  * out.
  */
 public class PDControlScrollPane extends JScrollPane {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(PDControlScrollPane.class);
 
 	class PDMouseWheelListener implements MouseWheelListener {
 
@@ -49,31 +52,30 @@ public class PDControlScrollPane extends JScrollPane {
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			JScrollPane parent = getParentScrollPane();
-			Helper.info(this.getClass(), "Parent scroll pane " + parent);
+			LOGGER.info("Parent scroll pane " + parent);
 			if (parent != null) {
 				/*
-				 * Only dispatch if we have reached top/bottom on previous
-				 * scroll
+				 * Only dispatch if we have reached top/bottom on previous scroll
 				 */
 				if (e.getWheelRotation() < 0) {
 					if (bar.getValue() == 0 && previousValue == 0) {
 						parent.dispatchEvent(cloneEvent(e));
-						Helper.info(this.getClass(), "To Parent");
+						LOGGER.info("To Parent");
 					}
 				} else if (!PDControlScrollPane.this.getVerticalScrollBar().isVisible()) {
 					parent.dispatchEvent(cloneEvent(e));
 				} else {
 					if (bar.getValue() == getMax() && previousValue == getMax()) {
 						parent.dispatchEvent(cloneEvent(e));
-						Helper.info(this.getClass(), "To Parent");
+						LOGGER.info("To Parent");
 					}
 				}
 				previousValue = bar.getValue();
 			}
 			/*
-			 * If parent scrollpane doesn't exist, remove this as a listener. We
-			 * have to defer this till now (vs doing it in constructor) because
-			 * in the constructor this item has no parent yet.
+			 * If parent scrollpane doesn't exist, remove this as a listener. We have to
+			 * defer this till now (vs doing it in constructor) because in the constructor
+			 * this item has no parent yet.
 			 */
 			else {
 				PDControlScrollPane.this.removeMouseWheelListener(this);

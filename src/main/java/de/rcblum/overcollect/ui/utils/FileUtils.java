@@ -4,9 +4,12 @@ import java.io.File;
 
 import javax.swing.filechooser.FileFilter;
 
-import de.rcblum.overcollect.utils.Helper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileUtils {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
 	public static class OWFileFilter extends FileFilter {
 
@@ -18,8 +21,9 @@ public class FileUtils {
 
 		@Override
 		public boolean accept(File f) {
-			if (f == null)
-				Helper.info(this.getClass(), f);
+			if (f == null) {
+				LOGGER.info(f.toString());
+			}
 			return (f != null && f.toString().endsWith(this.ext)) || (f != null && f.isDirectory()) ? true : false;
 		}
 

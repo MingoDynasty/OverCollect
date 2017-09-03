@@ -19,13 +19,16 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.configuration.OCRConfiguration;
 import de.rcblum.overcollect.configuration.OWLib;
 import de.rcblum.overcollect.extract.ocr.Glyph;
 import de.rcblum.overcollect.extract.ocr.ImageGlyphSplitter;
-import de.rcblum.overcollect.utils.Helper;
 
 public class ScreenExtract {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScreenExtract.class);
 
 	public static BufferedImage adjustImage(BufferedImage source, Color primaryColor, double skewX, int skewTrim,
 			boolean doRecolor) {
@@ -138,7 +141,7 @@ public class ScreenExtract {
 		if (this.config.values != null) {
 			for (String field : this.config.values.keySet()) {
 				int[] bounds = this.config.values.get(field);
-				Helper.info(this.getClass(), "Primary Field: [name=" + field + ", x=" + bounds[0] + ", y=" + bounds[1] + ", w="
+				LOGGER.info("Primary Field: [name=" + field + ", x=" + bounds[0] + ", y=" + bounds[1] + ", w="
 						+ this.config.secondaryDataFieldSize[0] + ", h=" + this.config.secondaryDataFieldSize[1] + "]");
 				this.valueImages.put(field,
 						adjustImage(
@@ -150,7 +153,7 @@ public class ScreenExtract {
 		if (this.config.secondaryValues != null) {
 			for (String field : this.config.secondaryValues.keySet()) {
 				int[] bounds = this.config.secondaryValues.get(field);
-				Helper.info(this.getClass(), "Secondary Field: [name=" + field + ", x=" + bounds[0] + ", y=" + bounds[1] + ", w="
+				LOGGER.info("Secondary Field: [name=" + field + ", x=" + bounds[0] + ", y=" + bounds[1] + ", w="
 						+ this.config.secondaryDataFieldSize[0] + ", h=" + this.config.secondaryDataFieldSize[1] + "]");
 				this.secondaryValueImages.put(field, this.screenImg.getSubimage(bounds[0], bounds[1],
 						this.config.secondaryDataFieldSize[0], this.config.secondaryDataFieldSize[1]));
@@ -193,7 +196,8 @@ public class ScreenExtract {
 			// // TODO Auto-generated catch block
 			// e.printStackTrace();
 			// }
-			BufferedImage[] charImgs = ImageGlyphSplitter.splitImage(img, this.config.getDataColor(), 0.06f, this.config.pixelDetectionCount);
+			BufferedImage[] charImgs = ImageGlyphSplitter.splitImage(img, this.config.getDataColor(), 0.06f,
+					this.config.pixelDetectionCount);
 			char[] chars = new char[charImgs.length];
 			Glyph[] mostProbableGlyph = new Glyph[charImgs.length];
 			BufferedImage[] mostProbableImg = new BufferedImage[charImgs.length];
@@ -209,7 +213,8 @@ public class ScreenExtract {
 					int newH = Math.round(charImgs[i].getHeight()
 							* (((float) glyph.getBaseFontSize()) / ((float) charImgs[i].getHeight())));
 					BufferedImage rescaled = glyph.getBaseFontSize() != charImgs[i].getHeight()
-							? resize(charImgs[i], newW, newH) : charImgs[i];
+							? resize(charImgs[i], newW, newH)
+							: charImgs[i];
 					if (OWLib.getInstance().getBoolean("debug.extraction")) {
 						try {
 							ImageIO.write(rescaled, "PNG",
@@ -226,25 +231,26 @@ public class ScreenExtract {
 						mostProbableImg[i] = rescaled;
 					}
 					if (glyph.match(rescaled, this.config.getDataColor(), 0.06f)) {
-//						try {
-//							ImageIO.write(rescaled, "PNG",
-//									Paths.get("tmp", (glyph.getChar() == ':' ? '_' : glyph.getChar()) + "_" + field
-//											+ "[" + i + "]_rescaled.png").toFile());
-//						} catch (IOException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
+						// try {
+						// ImageIO.write(rescaled, "PNG",
+						// Paths.get("tmp", (glyph.getChar() == ':' ? '_' : glyph.getChar()) + "_" +
+						// field
+						// + "[" + i + "]_rescaled.png").toFile());
+						// } catch (IOException e) {
+						// // TODO Auto-generated catch block
+						// e.printStackTrace();
+						// }
 						chars[i] = glyph.getChar();
 					}
 				}
 				if (chars[i] == ' ') {
 					try {
-						int newW = Math.round(charImgs[i].getWidth()
-								* (((float) 55) / ((float) charImgs[i].getHeight())));
-						int newH = Math.round(charImgs[i].getHeight()
-								* (((float) 55) / ((float) charImgs[i].getHeight())));
-						BufferedImage rescaled = 55 != charImgs[i].getHeight()
-								? resize(charImgs[i], newW, newH) : charImgs[i];
+						int newW = Math
+								.round(charImgs[i].getWidth() * (((float) 55) / ((float) charImgs[i].getHeight())));
+						int newH = Math
+								.round(charImgs[i].getHeight() * (((float) 55) / ((float) charImgs[i].getHeight())));
+						BufferedImage rescaled = 55 != charImgs[i].getHeight() ? resize(charImgs[i], newW, newH)
+								: charImgs[i];
 						this.nohitPrimary.put(charImgs[i], mostProbableGlyph[i]);
 						ImageIO.write(rescaled, "PNG",
 								Paths.get("tmp", "NOHIT_" + field + "[" + i + "]_rescaled.png").toFile());

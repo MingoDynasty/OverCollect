@@ -19,6 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.FormSpecs;
@@ -29,7 +32,6 @@ import de.rcblum.overcollect.collect.listener.owmatch.OWMatchEvent;
 import de.rcblum.overcollect.collect.listener.owmatch.OWMatchListener;
 import de.rcblum.overcollect.configuration.OWItem;
 import de.rcblum.overcollect.ui.utils.UiStatics;
-import de.rcblum.overcollect.utils.Helper;
 
 public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionListener, ImageListener {
 
@@ -37,6 +39,8 @@ public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionL
 	 * 
 	 */
 	private static final long serialVersionUID = 5710708290677918754L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JOwCaptureStatus.class);
 
 	private static BufferedImage getImageFrom(Path matchPath, OWItem item) throws IOException {
 		matchPath = Objects.requireNonNull(matchPath);
@@ -87,41 +91,20 @@ public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionL
 		this.setMinimumSize(new Dimension(800, 130));
 		this.setSize(new Dimension(800, 130));
 		this.setMaximumSize(new Dimension(5000, 130));
-		setLayout(new FormLayout(new ColumnSpec[] {
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("220px"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(100px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(90px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(100px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(75px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("default:grow"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(75px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				ColumnSpec.decode("max(30px;default)"),
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,
-				FormSpecs.DEFAULT_COLSPEC,
-				FormSpecs.RELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.DEFAULT_ROWSPEC,
-				FormSpecs.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("30dlu"),
-				FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC,}));
+		setLayout(new FormLayout(new ColumnSpec[] { FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("220px"),
+				FormSpecs.RELATED_GAP_COLSPEC, ColumnSpec.decode("max(100px;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(90px;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(100px;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(75px;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("default:grow"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(75px;default)"), FormSpecs.RELATED_GAP_COLSPEC,
+				ColumnSpec.decode("max(30px;default)"), FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC,
+				FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC,
+				FormSpecs.RELATED_GAP_COLSPEC, FormSpecs.DEFAULT_COLSPEC, FormSpecs.RELATED_GAP_COLSPEC, },
+				new RowSpec[] { FormSpecs.RELATED_GAP_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC, FormSpecs.DEFAULT_ROWSPEC,
+						FormSpecs.RELATED_GAP_ROWSPEC, RowSpec.decode("30dlu"),
+						FormSpecs.LABEL_COMPONENT_GAP_ROWSPEC, }));
 
 		pMap = new JMapPanel();
 		add(pMap, "2, 2, 1, 4, fill, fill");
@@ -259,7 +242,7 @@ public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionL
 
 	@Override
 	public void matchStatRecorded(OWMatchEvent e) {
-		Helper.info(this.getClass(), "Stat ev recieved");
+		LOGGER.info( "Stat ev recieved");
 		if (matchRunning)
 			lblHeroStatsRecorded.setText("Hero Stat recorded");
 	}
