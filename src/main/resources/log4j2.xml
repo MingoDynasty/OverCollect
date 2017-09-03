@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+
+	<Properties>
+		<Property name="app-name">OverwatchCollect</Property>
+		<Property name="log-path">logs</Property>
+		<Property name="date-format">yyyy-MM-dd</Property>
+		<Property name="time-format">HH:mm:ss.SSS</Property>
+		<Property name="date-time-format">${date-format} ${time-format}</Property>
+	</Properties>
+
+	<Appenders>
+
+		<!-- Appender for console logging to stdout. -->
+		<Console name="console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{${time-format}} |%-5p| [%t] %c{} (%F:%L) => %m%n" />
+		</Console>
+
+		<!-- Appender for test/debug logging; not recommended for production. -->
+		<RollingFile name="debug-log" fileName="${log-path}/${app-name}-debug.log"
+			filePattern="${log-path}/${app-name}-debug-%d{${date-format}}.log" append="false">
+			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] %c{} (%F:%L) => %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+
+		<!-- Appender for full production log -->
+		<RollingFile name="production-log" fileName="${log-path}/${app-name}.log"
+			filePattern="${log-path}/${app-name}-%d{${date-format}}.log" append="true">
+			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] | %c{} => %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+
+		<!-- Appender for production log for errors only -->
+		<RollingFile name="error-log" fileName="${log-path}/${app-name}-errors.log"
+			filePattern="${log-path}/${app-name}-errors-%d{${date-format}}.log" append="true">
+			<PatternLayout pattern="%d{${date-time-format}} | %-5p | [%t] | %x | %c (%F:%L) => %m%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+		</RollingFile>
+
+	</Appenders>
+
+	<Loggers>
+
+		<!-- Logger for P8A debug; not recommended for a production environment. -->
+		<Logger name="de.rcblum.overcollect">
+			<AppenderRef ref="debug-log" level="debug" />
+		</Logger>
+
+		<!-- Production logging -->
+		<Root level="debug">
+			<AppenderRef ref="console" level="debug" />
+			<AppenderRef ref="production-log" level="debug" />
+			<AppenderRef ref="error-log" level="error" />
+		</Root>
+
+	</Loggers>
+
+</Configuration>

@@ -11,10 +11,12 @@ import java.nio.file.Paths;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import de.rcblum.overcollect.capture.listener.ImageSource;
-import de.rcblum.overcollect.capture.FFMpegCaptureEngine;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.capture.RobotCaptureEngine;
 import de.rcblum.overcollect.capture.listener.ImageListener;
+import de.rcblum.overcollect.capture.listener.ImageSource;
 import de.rcblum.overcollect.collect.FilterEngine;
 import de.rcblum.overcollect.collect.MatchComposer;
 import de.rcblum.overcollect.collect.listener.owmatch.OWMatchListener;
@@ -29,6 +31,7 @@ import de.rcblum.overcollect.ui.setup.ocr.JOCRSetup;
 import de.rcblum.overcollect.utils.Helper;
 
 public class OverWatchCollectorApp {
+	public static final Logger LOGGER = LoggerFactory.getLogger(OverWatchCollectorApp.class);
 
 	public static void main(String[] args) throws AWTException, IOException {
 		try {
@@ -59,6 +62,7 @@ public class OverWatchCollectorApp {
 		// UIManager.put (key, new
 		// javax.swing.plaf.ColorUIResource(UiStatics.COLOR_BACKGROUND));
 		// }
+		LOGGER.info("Mingtest info!");
 		System.out.println("OverCollect Version " + OWLib.VERSION_STRING);
 		System.out.println("Made By Roland von Werden");
 		System.out.println("Copyright @2017");
@@ -169,16 +173,18 @@ public class OverWatchCollectorApp {
 		/**
 		 * Capture Screenshots
 		 */
-//		captureEngine = new RobotCaptureEngine();
+		// captureEngine = new RobotCaptureEngine();
 		try {
 			String className = System.getProperties().getProperty("de.rcblum.overcollect.capture");
-			className = className != null ? className : OWLib.getInstance().getString("engines.capture", "de.rcblum.overcollect.capture.RobotCaptureEngine");
+			className = className != null ? className
+					: OWLib.getInstance().getString("engines.capture",
+							"de.rcblum.overcollect.capture.RobotCaptureEngine");
 			Helper.info(this.getClass(), "Loading capture engine: " + className);
 			Class classObject = Class.forName(className);
 			Object captureObject = classObject.newInstance();
 			if (captureObject instanceof ImageSource)
-				captureEngine = (ImageSource)captureObject;
-			else 
+				captureEngine = (ImageSource) captureObject;
+			else
 				throw new ClassNotFoundException("Class not anm instance of Image Source");
 		} catch (NullPointerException | InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
 			e1.printStackTrace();
@@ -192,8 +198,8 @@ public class OverWatchCollectorApp {
 		filterEngine = new FilterEngine();
 
 		/**
-		 * Compose captured screenshots into matches, discard duplicates or out
-		 * of order false positives
+		 * Compose captured screenshots into matches, discard duplicates or out of order
+		 * false positives
 		 */
 		matchComposer = new MatchComposer(System.getProperties().getProperty("owcollect.match.dir"));
 
