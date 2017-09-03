@@ -68,7 +68,7 @@ public class JMapPanel extends JPanel {
 		this.setMaximumSize(new Dimension(220, 123));
 		setLayout(null);
 		try {
-			defaultBackground = ImageIO.read(JMapPanel.class.getResourceAsStream("/resources/defaultBackground.png"));
+			defaultBackground = ImageIO.read(JMapPanel.class.getResourceAsStream("/defaultBackground.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

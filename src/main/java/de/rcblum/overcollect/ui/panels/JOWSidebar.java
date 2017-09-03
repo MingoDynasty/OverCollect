@@ -42,10 +42,10 @@ import de.rcblum.overcollect.ui.utils.UiStatics;
 public class JOWSidebar extends JPanel {
 
 	private static final Icon ICON_NOT_RECORDING = new ImageIcon(
-			JOWSidebar.class.getResource("/resources/ui/NoRecording.png"));
+			JOWSidebar.class.getResource("/ui/NoRecording.png"));
 
 	private static final Icon ICON_RECORDING = new ImageIcon(
-			JOWSidebar.class.getResource("/resources/ui/Recording.png"));
+			JOWSidebar.class.getResource("/ui/Recording.png"));
 	public static void infoBox(String infoMessage, String titleBar, int msgType) {
 		JOptionPane.showMessageDialog(null, infoMessage, titleBar, msgType);
 	}

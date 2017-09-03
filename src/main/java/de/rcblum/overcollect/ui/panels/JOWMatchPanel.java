@@ -290,10 +290,10 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 
 	private void setData() {
 		this.background = ImageCache.getImageFromResource(
-				"/resources/ui/background/" + this.match.getMap().replaceAll("_", "").trim() + ".png");
+				"/ui/background/" + this.match.getMap().replaceAll("_", "").trim() + ".png");
 		// try loading the default Image
 		if (this.background == null) {
-			this.background = ImageCache.getImageFromResource("/resources/ui/background/default.png");
+			this.background = ImageCache.getImageFromResource("/ui/background/default.png");
 		}
 		this.lblSr.setText(this.match.getSr() != -1 ? this.match.getSr() + " " : "N/A ");
 		this.lblTeamSr.setText(this.match.getTeamSr() + " ");

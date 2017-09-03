@@ -12,8 +12,26 @@
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
+          <fork>true</fork>
+          <compilerArgument>-XDignore.symbol.file</compilerArgument>
         </configuration>
       </plugin>
+      
+      <plugin>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-maven-plugin</artifactId>
+         <version>1.5.6.RELEASE</version>
+         <configuration>
+	        <mainClass>de.rcblum.overcollect.OverWatchCollectorApp</mainClass>
+	      </configuration>
+         <executions>
+             <execution>
+                 <goals>
+                     <goal>repackage</goal>
+                 </goals>
+             </execution>
+         </executions>
+     </plugin>
     </plugins>
   </build>
   <dependencies>
