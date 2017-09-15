@@ -40,7 +40,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 
 	FFmpegFrameGrabber[] availableScreens = new FFmpegFrameGrabber[screens.length];
 
-	private Timer t = null;
+	private Timer timer = null;
 
 	private int captureInterval = 1000;
 
@@ -50,7 +50,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 
 	private GraphicsDevice screen = null;
 
-	private FFmpegFrameGrabber r = null;
+	private FFmpegFrameGrabber frameGrabber = null;
 
 	private Java2DFrameConverter frameConverter = new Java2DFrameConverter();
 
@@ -87,35 +87,43 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 		// this.screen = Objects.requireNonNull(screen);
 		// this.r = new Robot(screen);
 		LOGGER.info("captureInterval: {}", this.captureInterval);
-		t = new Timer(this.captureInterval, this);
+		timer = new Timer(this.captureInterval, this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (this.screen == null)
+		LOGGER.trace("Action performed.");
+		if (this.screen == null) {
 			autodetectScreen();
-		else {
-			try {
-				Frame frame = this.r.grabImage();
-				BufferedImage br = new Java2DFrameConverter().getBufferedImage(frame);
-				this.fireImage(br);
-				if (OWLib.getInstance().getBoolean("debug.capture")) {
-					try {
-						Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
-						if (!Files.exists(debugPath)) {
-							Files.createDirectories(debugPath);
-						}
-						Path debugFile = debugPath
-								.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
-						ImageIO.write(br, "PNG", debugFile.toFile());
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
+		} else {
+			this.grabScreen();
+		}
+	}
+
+	private void grabScreen() {
+		LOGGER.trace("Grabbing screen...");
+		try {
+			Frame frame = this.frameGrabber.grabImage();
+			BufferedImage br = new Java2DFrameConverter().getBufferedImage(frame);
+			this.fireImage(br);
+			if (OWLib.getInstance().getBoolean("debug.capture")) {
+				this.saveCaptureScreen(br);
 			}
+		} catch (Exception e) {
+			LOGGER.error("Exception: {}", e);
+		}
+	}
+
+	private void saveCaptureScreen(BufferedImage br) {
+		try {
+			Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
+			if (!Files.exists(debugPath)) {
+				Files.createDirectories(debugPath);
+			}
+			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
+			ImageIO.write(br, "PNG", debugFile.toFile());
+		} catch (IOException ioe) {
+			LOGGER.error("Exception: {}", ioe);
 		}
 	}
 
@@ -131,6 +139,8 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 	}
 
 	private void autodetectScreen() {
+		LOGGER.debug("Searching for screen...");
+
 		// Wait for Overwatch to launch
 		OWLib lib = OWLib.getInstance();
 
@@ -153,7 +163,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 						if (itemStart.hasFilter() && itemStart.getFilter().match(br)
 								|| itemMain.hasFilter() && itemMain.getFilter().match(br)) {
 							this.screen = screen;
-							this.r = robot;
+							this.frameGrabber = robot;
 							this.selectedScreen = i;
 							for (int j = 0; j < availableScreens.length; j++) {
 								if (j != i && availableScreens[j] != null)
@@ -164,7 +174,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.error("Exception: {}", e);
 				}
 			}
 		}
@@ -215,7 +225,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 	 */
 	@Override
 	public boolean isRunning() {
-		return this.t.isRunning();
+		return this.timer.isRunning();
 	}
 
 	/*
@@ -253,7 +263,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 	@Override
 	public void start() {
 		LOGGER.info("Start capture");
-		this.t.start();
+		this.timer.start();
 	}
 
 	/*
@@ -264,6 +274,6 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 	@Override
 	public void stop() {
 		LOGGER.info("Stop capture");
-		this.t.stop();
+		this.timer.stop();
 	}
 }

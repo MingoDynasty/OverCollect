@@ -131,12 +131,8 @@ public class OverWatchCollectorApp {
 			// app.addImageListener(mapPanel);
 
 		}
-		try {
-			Thread.sleep(50_000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+		LOGGER.info("End main.");
 	}
 
 	private ImageSource captureEngine = null;

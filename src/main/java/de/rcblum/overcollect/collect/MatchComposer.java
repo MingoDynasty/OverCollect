@@ -24,6 +24,7 @@ import java.util.concurrent.Executors;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,9 +67,14 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 		@Override
 		public void run() {
 			try {
-				if (!duplicateThreshold.containsKey(item.getItemName()) || duplicateThreshold
-						.get(item.getItemName()) < OWLib.getInstance().getInteger("duplicateThreshold", 4)) {
-					LOGGER.info("Filter found: " + item.getItemName());
+				if (duplicateThreshold.containsKey(item.getItemName())) {
+					LOGGER.debug("Item already found.");
+					return;
+				}
+
+				if (duplicateThreshold.get(item.getItemName()) < OWLib.getInstance().getInteger("duplicateThreshold",
+						4)) {
+					LOGGER.info("Filter found: {}", item.getItemName());
 					if (matchIndicators.contains(item.getItemName()) && !matchIndicators.contains(lastItem))
 						newMatch(i, item);
 					if (currentMatch != null && item.isMap())
@@ -91,7 +97,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 					lastItem = item.getItemName();
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error("Exception during run.", e);
 			}
 		}
 	}
@@ -209,7 +215,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 
 	public void addOWMatchListener(OWMatchListener listener) {
 		synchronized (this.listenerLock) {
-			LOGGER.info("OWMatchListener added: " + listener);
+			LOGGER.info("OWMatchListener added: {}", listener.getClass());
 			this.listeners.add(listener);
 		}
 	}
@@ -488,11 +494,18 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 	@Override
 	public void run() {
 
+		final int captureInterval = OWLib.getInstance().getInteger("captureInterval", 1000);
+
 		for (;;) {
+			StopWatch stopWatch = new StopWatch();
+			LOGGER.trace("MatchComposer: updating...");
+			stopWatch.start();
 			while (!this.dispatchQueue.isEmpty()) {
+				LOGGER.debug("Found an event!");
 				OWMatchEvent e = this.dispatchQueue.poll();
 				synchronized (this.listenerLock) {
 					for (OWMatchListener listener : this.listeners) {
+						LOGGER.debug("e.type: {}", e.type);
 						switch (e.type) {
 						case NEW_MATCH:
 							listener.matchStarted(e);
@@ -515,12 +528,17 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 					}
 				}
 			}
+
 			try {
-				Thread.sleep(OWLib.getInstance().getInteger("captureInterval", 1000));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				Thread.sleep(captureInterval);
+			} catch (InterruptedException ioe) {
+				LOGGER.error("InterruptedException: {}", ioe);
+				Thread.currentThread().interrupt();
 				break;
 			}
+
+			stopWatch.stop();
+			LOGGER.trace("MatchComposer: update finished in: {}", stopWatch.getTime());
 		}
 	}
 
