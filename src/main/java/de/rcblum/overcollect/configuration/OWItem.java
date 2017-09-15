@@ -216,7 +216,7 @@ public class OWItem {
 	}
 
 	/**
-	 * Returns if the Item representátes a map
+	 * Returns if the Item representÃ¡tes a map
 	 * 
 	 * @return <code>true</code> if filtered screenshots represents a map,
 	 *         <code>false</code> if not
