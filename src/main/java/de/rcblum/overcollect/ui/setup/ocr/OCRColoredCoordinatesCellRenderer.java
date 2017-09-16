@@ -2,6 +2,7 @@ package de.rcblum.overcollect.ui.setup.ocr;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.io.Serializable;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -10,7 +11,9 @@ import javax.swing.table.TableModel;
 public class OCRColoredCoordinatesCellRenderer extends DefaultTableCellRenderer {
 
 	/**
+	 * A unique serial version identifier
 	 * 
+	 * @see Serializable#serialVersionUID
 	 */
 	private static final long serialVersionUID = -6764008451551747601L;
 

@@ -12,6 +12,7 @@ import java.awt.font.TextAttribute;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,9 @@ import de.rcblum.overcollect.ui.utils.UiStatics;
 public class JMapPanel extends JPanel {
 
 	/**
+	 * A unique serial version identifier
 	 * 
+	 * @see Serializable#serialVersionUID
 	 */
 	private static final long serialVersionUID = 6792531438908056066L;
 
@@ -48,7 +51,7 @@ public class JMapPanel extends JPanel {
 		mapPanel.setMap("Temple of Anubis", bImg);
 	}
 
-	private BufferedImage background = null;
+	private BufferedImage myBackground = null;
 
 	private BufferedImage _draw = new BufferedImage(220, 123, BufferedImage.TYPE_INT_ARGB);
 
@@ -109,16 +112,16 @@ public class JMapPanel extends JPanel {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if (background != null || defaultBackground != null) {
-			drawBackground((Graphics2D) g, background != null ? background : defaultBackground);
+		if (myBackground != null || defaultBackground != null) {
+			drawBackground((Graphics2D) g, myBackground != null ? myBackground : defaultBackground);
 			g.setColor(new Color(200, 200, 200, 70));
-			if (background != null)
+			if (myBackground != null)
 				g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		}
 	}
 
 	public void setBackgroundImage(BufferedImage background) {
-		this.background = background;// != null ? resize(background,
+		this.myBackground = background;// != null ? resize(background,
 										// this.getWidth(), (int)
 										// (background.getHeight()*((float)this.getWidth())/background.getWidth()))
 										// : null;
@@ -126,7 +129,7 @@ public class JMapPanel extends JPanel {
 	}
 
 	public void setMap(String name, BufferedImage background) {
-		this.background = background;// != null ? resize(background,
+		this.myBackground = background;// != null ? resize(background,
 										// this.getWidth(), (int)
 										// (background.getHeight()*((float)this.getWidth())/background.getWidth()))
 										// : null;

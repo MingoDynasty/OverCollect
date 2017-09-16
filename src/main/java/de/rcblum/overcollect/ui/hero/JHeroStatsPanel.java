@@ -7,10 +7,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -33,6 +33,13 @@ import de.rcblum.overcollect.utils.Helper;
 
 public class JHeroStatsPanel extends JPanel {
 
+	/**
+	 * A unique serial version identifier
+	 * 
+	 * @see Serializable#serialVersionUID
+	 */
+	private static final long serialVersionUID = 6474173548305938072L;
+
 	public static void main(String[] args) {
 		String json = "{" + "      \"name\": \"Reinhardt\"," + "      \"secondaryStats\": {"
 				+ "        \"killStreak\": \"8\"," + "        \"fireStrikeKills\": \"9\","
@@ -50,8 +57,12 @@ public class JHeroStatsPanel extends JPanel {
 		f.pack();
 		f.setVisible(true);
 	}
+
 	OWCharacterStats hero = null;
-	private JOWMatchContentPanel parent = null;
+
+	// TODO: not used?
+	// private JOWMatchContentPanel parent = null;
+
 	private JTextField txtEliminations;
 	private JTextField txtObjkills;
 	private JTextField txtObjTime;
@@ -78,76 +89,31 @@ public class JHeroStatsPanel extends JPanel {
 		this.setBorder(null);
 		setBackground(new Color(0, 0, 0, 55));
 		setOpaque(false);
-		setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("15px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("15px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("15px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("15px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("15px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px"),
-				ColumnSpec.decode("20px"),
-				ColumnSpec.decode("10px:grow"),
-				ColumnSpec.decode("20px:grow"),
-				ColumnSpec.decode("10px:grow"),},
-			new RowSpec[] {
-				RowSpec.decode("1px"),
-				RowSpec.decode("4px"),
-				RowSpec.decode("20px"),
-				RowSpec.decode("5px"),
-				RowSpec.decode("30px"),
-				RowSpec.decode("10px"),
-				RowSpec.decode("15px"),
-				RowSpec.decode("5px"),
-				RowSpec.decode("20px"),
-				RowSpec.decode("5px"),
-				RowSpec.decode("5px"),}));
+		setLayout(new FormLayout(
+				new ColumnSpec[] { ColumnSpec.decode("10px"), ColumnSpec.decode("15px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("15px"), ColumnSpec.decode("10px"), ColumnSpec.decode("15px"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("15px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("15px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px"),
+						ColumnSpec.decode("10px"), ColumnSpec.decode("20px"), ColumnSpec.decode("10px"),
+						ColumnSpec.decode("20px"), ColumnSpec.decode("10px"), ColumnSpec.decode("20px"),
+						ColumnSpec.decode("10px:grow"), ColumnSpec.decode("20px:grow"),
+						ColumnSpec.decode("10px:grow"), },
+				new RowSpec[] { RowSpec.decode("1px"), RowSpec.decode("4px"), RowSpec.decode("20px"),
+						RowSpec.decode("5px"), RowSpec.decode("30px"), RowSpec.decode("10px"), RowSpec.decode("15px"),
+						RowSpec.decode("5px"), RowSpec.decode("20px"), RowSpec.decode("5px"),
+						RowSpec.decode("5px"), }));
 
 		Properties p = new Properties();
 		BufferedImage b = null;
@@ -209,11 +175,10 @@ public class JHeroStatsPanel extends JPanel {
 		txtEliminations.setOpaque(false);
 		add(txtEliminations, "12, 5, 5, 1, fill, top");
 		txtEliminations.setColumns(10);
-		
+
 		pSecondaryStatsPanel = new JSecondaryStatsPanel();
 		pSecondaryStatsPanel.setOpaque(false);
 		add(pSecondaryStatsPanel, "12, 7, 41, 5, fill, top");
-				
 
 		txtObjkills = new JTextField();
 		txtObjkills.setEditable(false);

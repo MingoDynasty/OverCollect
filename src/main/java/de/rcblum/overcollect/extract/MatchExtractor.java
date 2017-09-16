@@ -86,27 +86,27 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 
 		private ScreenExtract createScreenExtract(Path imagePath, Path ocrConfig) {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				LOGGER.debug("Extracting: " + imagePath.getFileName().toString());
-			if (Files.exists(imagePath) && Files.exists(ocrConfig))
+				LOGGER.debug("Extracting: {}", imagePath.getFileName());
+			if (imagePath.toFile().exists() && ocrConfig.toFile().exists())
 				try {
 					BufferedImage image = ImageIO.read(imagePath.toFile());
 					String text = new String(Files.readAllBytes(ocrConfig), StandardCharsets.UTF_8);
 					OCRConfiguration config = g.fromJson(text, OCRConfiguration.class);
-					if (OWLib.getInstance().getBoolean("debug.extraction"))
-						LOGGER.debug("OCR-Configuration.pixelDetectionCount: " + config.pixelDetectionCount);
-					ScreenExtract sc = new ScreenExtract(image, config);
-					return sc;
+					if (OWLib.getInstance().getBoolean("debug.extraction")) {
+						LOGGER.debug("OCR-Configuration.pixelDetectionCount: {}", config.pixelDetectionCount);
+						return new ScreenExtract(image, config);
+					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.error("IOException: ", e);
 				}
 			return null;
 		}
 
 		private void readStats(Path hero) {
-			LOGGER.info("Hero: " + hero);
+			LOGGER.info("Hero: {}", hero);
 			String filename = hero.getFileName().toString().replace(".png", "");
 			ScreenExtract sc = null;
-			if (Files.exists(hero) && Files.exists(hero.getParent().resolve(filename + ".ocr")))
+			if (hero.toFile().exists() && Files.exists(hero.getParent().resolve(filename + ".ocr")))
 				sc = createScreenExtract(hero, hero.getParent().resolve(filename + ".ocr"));
 			if (sc != null) {
 				OWCharacterStats cStats = new OWCharacterStats();
@@ -158,7 +158,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				this.match.setMap(
 						properties.getProperty("map") != null ? properties.getProperty("map").replace("_", " ") : null);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("IOException: ", e);
 			}
 			// Check for defeat
 			Path defeat = this.matchPath.resolve("_defeat.png");
@@ -191,7 +191,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			}
 			sc = null;
 			// Extract SR if possible
-			if (Files.exists(this.matchPath.resolve("_sr_screen.png"))
+			if (this.matchPath.resolve("_sr_screen.png").toFile().exists()
 					&& Files.exists(this.matchPath.resolve("_sr_screen.ocr")))
 				sc = createScreenExtract(this.matchPath.resolve("_sr_screen.png"),
 						this.matchPath.resolve("_sr_screen.ocr"));
@@ -209,11 +209,11 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			sc = null;
 			// Extract overall-/hero-stats
 			Path stats = this.matchPath.resolve("stats");
-			if (Files.exists(stats) && Files.isDirectory(stats)) {
+			if (stats.toFile().exists() && stats.toFile().isDirectory()) {
 				try {
 					Files.list(stats).filter(f -> f.toString().endsWith(".png")).forEach(f -> readStats(f));
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.error("Exception: ", e);
 				}
 			}
 			try {
@@ -224,16 +224,18 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				Files.createFile(this.matchPath.resolve("extracted"));
 
 			} catch (UnsupportedEncodingException e) {
-				e.printStackTrace();
+				LOGGER.error("UnsupportedEncodingException: ", e);
 			} catch (IOException e) {
 
-				if (OWLib.getInstance().getBoolean("debug.extraction"))
+				if (OWLib.getInstance().getBoolean("debug.extraction")) {
 					LOGGER.debug("Error writing match to file: " + e.getMessage());
-				e.printStackTrace();
+				}
+				LOGGER.error("IOException: ", e);
 			}
 
-			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				LOGGER.debug("Done extracting match: " + matchPath.getFileName().toString());
+			if (OWLib.getInstance().getBoolean("debug.extraction")) {
+				LOGGER.debug("Done extracting match: {}", matchPath.getFileName());
+			}
 		}
 
 		private void writeImage(Path imagePath, BufferedImage i) {
@@ -241,8 +243,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				writePNG(i, os);
 				// ImageIO.write(i, "JPG", );
 			} catch (IOException e) {
-				LOGGER.info("Error writing image: " + imagePath.toAbsolutePath().toString());
-				e.printStackTrace();
+				LOGGER.info("Error writing image: {}", imagePath.toAbsolutePath().toString());
+				LOGGER.error("IOException: ", e);
 			}
 		}
 
@@ -338,7 +340,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				LOGGER.debug("Adding match to be extraced: " + matchPath.getFileName().toString() + "["
 						+ matchPath.toAbsolutePath().toString() + "]");
 			Path imagePath = this.imageRoot.resolve(matchPath.getFileName().toString());
-			if (!Files.exists(imagePath))
+			if (!imagePath.toFile().exists())
 				Files.createDirectories(imagePath);
 			Path dataPath = this.dataRoot;
 			if (!Files.exists(dataPath))
@@ -347,7 +349,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			this.worker.submit(w);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("IOException: ", e);
 		}
 	}
 

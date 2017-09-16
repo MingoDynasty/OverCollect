@@ -52,7 +52,7 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 	private boolean expanding = false;
 
 	private Animation animation = null;
-	private BufferedImage background = null;
+	private BufferedImage myBackground = null;
 	private JLabel lblMapName;
 	private JLabel lblSrDesc;
 	private JLabel lblSr;
@@ -217,8 +217,8 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 	}
 
 	private void drawBackground(Graphics2D g2d, BufferedImage img) {
-		if (background != null)
-			g2d.drawImage(background, 0, 0, null);
+		if (myBackground != null)
+			g2d.drawImage(myBackground, 0, 0, null);
 	}
 
 	/*
@@ -285,15 +285,15 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		drawBackground((Graphics2D) g, background);
+		drawBackground((Graphics2D) g, myBackground);
 	}
 
 	private void setData() {
-		this.background = ImageCache.getImageFromResource(
+		this.myBackground = ImageCache.getImageFromResource(
 				"/ui/background/" + this.match.getMap().replaceAll("_", "").trim() + ".png");
 		// try loading the default Image
-		if (this.background == null) {
-			this.background = ImageCache.getImageFromResource("/ui/background/default.png");
+		if (this.myBackground == null) {
+			this.myBackground = ImageCache.getImageFromResource("/ui/background/default.png");
 		}
 		this.lblSr.setText(this.match.getSr() != -1 ? this.match.getSr() + " " : "N/A ");
 		this.lblTeamSr.setText(this.match.getTeamSr() + " ");

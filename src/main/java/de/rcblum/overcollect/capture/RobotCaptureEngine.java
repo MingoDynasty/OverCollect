@@ -90,7 +90,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	private void saveCaptureScreen(BufferedImage br) {
 		try {
 			Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
-			if (!Files.exists(debugPath)) {
+			if (!debugPath.toFile().exists()) {
 				Files.createDirectories(debugPath);
 			}
 			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");

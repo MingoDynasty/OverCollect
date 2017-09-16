@@ -155,17 +155,22 @@ public class OverWatchCollectorApp {
 		Path tempDir = Paths.get(System.getProperties().getProperty("owcollect.temp.dir"));
 
 		// Make Paths if necessary
-		if (!Files.exists(matchPath))
+		if (!matchPath.toFile().exists()) {
 			Files.createDirectories(matchPath);
-		if (!Files.exists(dataPath))
+		}
+		if (!dataPath.toFile().exists()) {
 			Files.createDirectories(dataPath);
-		if (!Files.exists(imagePath))
+		}
+		if (!imagePath.toFile().exists()) {
 			Files.createDirectories(imagePath);
-		if (!Files.exists(tempDir))
+		}
+		if (!tempDir.toFile().exists()) {
 			Files.createDirectories(tempDir);
-		if (!Files.exists(libPath))
+		}
+		if (!libPath.toFile().exists()) {
 			throw new FileNotFoundException(
 					"Library \"" + libPath.toAbsolutePath().toString() + "\" not found, installation must be corrupt");
+		}
 
 		/**
 		 * Capture Screenshots

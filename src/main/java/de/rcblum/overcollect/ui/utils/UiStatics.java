@@ -8,9 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 
@@ -33,8 +32,10 @@ public class UiStatics {
 	public static class OWButton extends JButton {
 
 		/**
-		* 
-		*/
+		 * A unique serial version identifier
+		 * 
+		 * @see Serializable#serialVersionUID
+		 */
 		private static final long serialVersionUID = 4494248002773780294L;
 		private Color hoverBackgroundColor;
 		private Color pressedBackgroundColor;
@@ -161,7 +162,10 @@ public class UiStatics {
 			LOGGER.info("Downloading Font " + urlString);
 			try (FileOutputStream outputStream = new FileOutputStream(localFontFile)) {
 				URL owFontNormal = new URL(urlString);
-				ReadableByteChannel rbcFont = Channels.newChannel(owFontNormal.openStream());
+
+				// Unused??
+				// ReadableByteChannel rbcFont = Channels.newChannel(owFontNormal.openStream());
+
 				InputStream inputStream = owFontNormal.openConnection().getInputStream();
 				// Save fonts
 				int bytesRead = -1;
@@ -172,7 +176,7 @@ public class UiStatics {
 				LOGGER.info("Done downloading Fonts");
 			} catch (IOException e1) {
 				LOGGER.info("Error downloading font:");
-				e1.printStackTrace();
+				LOGGER.error("IOException: ", e1);
 			}
 		}
 		if (lfont.exists()) {
@@ -180,7 +184,7 @@ public class UiStatics {
 			try {
 				f = Font.createFont(Font.TRUETYPE_FONT, lfont);
 			} catch (FontFormatException | IOException e) {
-				e.printStackTrace();
+				LOGGER.error("FontFormatException | IOExceptio: ", e);
 			}
 			if (f != null)
 				return f;

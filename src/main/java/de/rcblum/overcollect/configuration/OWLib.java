@@ -59,7 +59,7 @@ public class OWLib {
 			if (!Files.exists(tempDir))
 				Files.createDirectories(tempDir);
 		} catch (IOException e) {
-			LOGGER.error("Exception: ", e);
+			LOGGER.error("IOException: ", e);
 		}
 	}
 	//

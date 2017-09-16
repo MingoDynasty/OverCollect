@@ -66,8 +66,7 @@ public class FontUtils {
 
 	public static void createFilter(Path imageRoot, boolean isPrimary) {
 		try {
-			List<Path> imagesPath = Files.list(imageRoot).filter(p -> Files.isRegularFile(p))
-					.collect(Collectors.toList());
+			List<Path> imagesPath = Files.list(imageRoot).filter(p -> p.toFile().isFile()).collect(Collectors.toList());
 			Map<String, LinkedList<BufferedImage>> inputImages = new HashMap<>();
 			for (Path path : imagesPath) {
 				BufferedImage b = ImageIO.read(path.toFile());
@@ -75,7 +74,7 @@ public class FontUtils {
 				if (inputImages.get(n) == null)
 					inputImages.put(n, new LinkedList<>());
 				inputImages.get(n).add(b);
-				LOGGER.info(n + ": " + path.getFileName());
+				LOGGER.info("{}: {}", n, path.getFileName());
 			}
 			List<int[]> filterPoints = new LinkedList<>();
 			Set<String> glyphs = inputImages.keySet();
@@ -97,7 +96,7 @@ public class FontUtils {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("IOException: ", e);
 		}
 	}
 
@@ -154,8 +153,7 @@ public class FontUtils {
 		}
 		mergeTestFiles(Paths.get("lib", "samples", "primary_font_source"),
 				Paths.get("lib", "samples", "primary_font_compiled"), false);
-		try {
-			Stream<Path> files = Files.list(Paths.get("lib", "samples", "primary_font_compiled"));
+		try (Stream<Path> files = Files.list(Paths.get("lib", "samples", "primary_font_compiled"))) {
 			files.filter(f -> f.toString().endsWith(".png")).forEach(c -> {
 				try {
 					BufferedImage source = ImageIO.read(c.toFile());
@@ -172,13 +170,11 @@ public class FontUtils {
 											String.valueOf(c.getFileName().toString().charAt(0)), "template.png")
 									.toFile());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOGGER.error("IOException: ", e);
 				}
 			});
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("IOException: ", e);
 		}
 		fs = Paths.get("lib", "samples", "primary_font_compiled").toFile().listFiles();
 		for (File file : fs) {
@@ -191,8 +187,7 @@ public class FontUtils {
 	public static void mergeSecondaryFontTestFiles() {
 		mergeTestFiles(Paths.get("lib", "samples", "secondary_font_source"),
 				Paths.get("lib", "samples", "secondary_font_compiled"), false);
-		try {
-			Stream<Path> files = Files.list(Paths.get("lib", "samples", "secondary_font_compiled"));
+		try (Stream<Path> files = Files.list(Paths.get("lib", "samples", "secondary_font_compiled"))) {
 			files.filter(f -> f.toString().endsWith(".png")).forEach(c -> {
 				try {
 					BufferedImage source = ImageIO.read(c.toFile());
@@ -209,18 +204,16 @@ public class FontUtils {
 											String.valueOf(c.getFileName().toString().charAt(0)), "template.png")
 									.toFile());
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					LOGGER.error("IOException: ", e);
 				}
 			});
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("IOException: ", e);
 		}
 	}
 
 	public static void mergeTestFiles(Path imageRoot, Path imageDest, boolean filterAgainstOtherGlyphs) {
-		if (Files.exists(imageRoot) && Files.isDirectory(imageRoot)) {
+		if (imageRoot.toFile().exists() && imageRoot.toFile().isDirectory()) {
 			try {
 				List<Path> imagesPath = Files.list(imageRoot).filter(p -> Files.isRegularFile(p))
 						.collect(Collectors.toList());
@@ -276,7 +269,7 @@ public class FontUtils {
 					}
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("IOException: ", e);
 			}
 		}
 	}
