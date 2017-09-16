@@ -11,6 +11,9 @@ public class FileUtils {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
 
+	private FileUtils() {
+	}
+
 	public static class OWFileFilter extends FileFilter {
 
 		String ext = null;
@@ -20,11 +23,12 @@ public class FileUtils {
 		}
 
 		@Override
-		public boolean accept(File f) {
-			if (f == null) {
-				LOGGER.info(f.toString());
+		public boolean accept(File file) {
+			if (file == null) {
+				LOGGER.info("File is null.");
 			}
-			return (f != null && f.toString().endsWith(this.ext)) || (f != null && f.isDirectory()) ? true : false;
+			return (file != null && file.toString().endsWith(this.ext)) || (file != null && file.isDirectory()) ? true
+					: false;
 		}
 
 		@Override

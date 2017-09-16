@@ -20,6 +20,7 @@ import java.awt.event.WindowListener;
 import java.awt.font.FontRenderContext;
 import java.awt.font.TextLayout;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -27,7 +28,19 @@ import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JLabel2D extends JLabel {
+	/**
+	 * A unique serial version identifier
+	 * 
+	 * @see Serializable#serialVersionUID
+	 */
+	private static final long serialVersionUID = -1945486282299917139L;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(JLabel2D.class);
+
 	public static final int EFFECT_PLAIN = 0;
 
 	public static final int EFFECT_GRADIENT = 1;
@@ -298,9 +311,9 @@ public class JLabel2D extends JLabel {
 			@Override
 			public void run() {
 				while (isRunning) {
-					if (effectIndex == EFFECT_IMAGE_ANIMATION)
+					if (effectIndex == EFFECT_IMAGE_ANIMATION) {
 						m_xShift += 10;
-					else if (effectIndex == EFFECT_COLOR_ANIMATION && gradient != null) {
+					} else if (effectIndex == EFFECT_COLOR_ANIMATION && gradient != null) {
 						arg += Math.PI / 10;
 						double cos = Math.cos(arg);
 						double f1 = (1 + cos) / 2;
@@ -320,7 +333,9 @@ public class JLabel2D extends JLabel {
 					repaint();
 					try {
 						sleep(m_delay);
-					} catch (InterruptedException ex) {
+					} catch (InterruptedException ie) {
+						LOGGER.error("InterruptedException: ", ie);
+						Thread.currentThread().interrupt();
 						break;
 					}
 				}

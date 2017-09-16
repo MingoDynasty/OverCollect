@@ -215,7 +215,7 @@ public class FontUtils {
 	public static void mergeTestFiles(Path imageRoot, Path imageDest, boolean filterAgainstOtherGlyphs) {
 		if (imageRoot.toFile().exists() && imageRoot.toFile().isDirectory()) {
 			try {
-				List<Path> imagesPath = Files.list(imageRoot).filter(p -> Files.isRegularFile(p))
+				List<Path> imagesPath = Files.list(imageRoot).filter(p -> p.toFile().isFile())
 						.collect(Collectors.toList());
 				Map<String, LinkedList<BufferedImage>> inputImages = new HashMap<>();
 				Map<String, BufferedImage> mergedImages = new HashMap<>();

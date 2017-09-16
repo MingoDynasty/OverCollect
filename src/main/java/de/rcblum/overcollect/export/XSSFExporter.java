@@ -41,7 +41,8 @@ public class XSSFExporter {
 
 	private List<OWMatch> matches = null;
 
-	private List<String> maps = null;
+	// TODO: not used?
+	// private List<String> maps = null;
 
 	private List<OWItem> heroes = null;
 
@@ -52,7 +53,8 @@ public class XSSFExporter {
 				.filter(m -> m.getAccount() == null || m.getAccount().equals(OWLib.getInstance().getActiveAccount()))
 				.sorted((m1, m2) -> m1.getStartTime().compareTo(m2.getStartTime())).collect(Collectors.toList());
 		this.heroes = OWLib.getInstance().getHeroes();
-		this.maps = OWLib.getInstance().getMaps();
+		// TODO: not used?
+		// this.maps = OWLib.getInstance().getMaps();
 		this.workbook = new XSSFWorkbook();
 	}
 
@@ -168,8 +170,19 @@ public class XSSFExporter {
 					c.setCellValue(statOptional.isPresent() ? statOptional.get().getHealingDone() : 0);
 					c = row.createCell(cellIndex++);
 					c.setCellValue(statOptional.isPresent() ? statOptional.get().getDeaths() : 0);
-					deaths += statOptional.get().getDeaths();
-					kills += statOptional.get().getEliminations();
+
+					if (statOptional.isPresent()) {
+						deaths += statOptional.get().getDeaths();
+					} else {
+						LOGGER.warn("Stat optional deaths is not present.");
+					}
+
+					if (statOptional.isPresent()) {
+						kills += statOptional.get().getEliminations();
+					} else {
+						LOGGER.warn("Stat optional kills is not present.");
+					}
+
 					double kd = kills / (deaths == 0 ? 1 : deaths);
 					c = row.createCell(cellIndex++);
 					c.setCellValue(kd);

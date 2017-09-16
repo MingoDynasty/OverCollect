@@ -43,9 +43,9 @@ public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionL
 	private static final Logger LOGGER = LoggerFactory.getLogger(JOwCaptureStatus.class);
 
 	private static BufferedImage getImageFrom(Path matchPath, OWItem item) throws IOException {
-		matchPath = Objects.requireNonNull(matchPath);
-		item = Objects.requireNonNull(item);
-		BufferedImage img = ImageIO.read(matchPath.resolve(item.getItemName() + ".png").toFile());
+		Path myMatchPath = Objects.requireNonNull(matchPath);
+		OWItem myItem = Objects.requireNonNull(item);
+		BufferedImage img = ImageIO.read(myMatchPath.resolve(myItem.getItemName() + ".png").toFile());
 		return img;
 	}
 
@@ -242,7 +242,7 @@ public class JOwCaptureStatus extends JPanel implements OWMatchListener, ActionL
 
 	@Override
 	public void matchStatRecorded(OWMatchEvent e) {
-		LOGGER.info( "Stat ev recieved");
+		LOGGER.info("Stat ev recieved");
 		if (matchRunning)
 			lblHeroStatsRecorded.setText("Hero Stat recorded");
 	}

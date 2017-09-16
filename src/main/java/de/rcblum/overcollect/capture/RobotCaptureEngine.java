@@ -93,7 +93,8 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 			if (!debugPath.toFile().exists()) {
 				Files.createDirectories(debugPath);
 			}
-			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
+			Path debugFile = debugPath
+					.resolve(Helper.getSimpleDateFormatFile().format(new Date(System.currentTimeMillis())) + ".png");
 			ImageIO.write(br, "PNG", debugFile.toFile());
 		} catch (IOException e1) {
 			LOGGER.error("IOException: ", e1);

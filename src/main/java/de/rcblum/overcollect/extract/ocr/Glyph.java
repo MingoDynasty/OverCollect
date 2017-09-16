@@ -37,6 +37,8 @@ public class Glyph {
 		List<int[]> negativePixels = new LinkedList<>();
 		for (int i = 0; i < filter.points.length; i++) {
 			int[] pixel = filter.points[i];
+			// TODO: I should revisit this because I don't really know what this math is
+			// doing, and it could be a huge bug or a simple copy/paste error.
 			if (pixel[2] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d)
 				positivePixels.add(new int[] { pixel[0], pixel[1] });
 			else
@@ -44,8 +46,8 @@ public class Glyph {
 		}
 
 		return new Glyph(character, fontSize,
-				positivePixels.size() == 0 ? null : positivePixels.toArray(new int[][] { {} }),
-				negativePixels.size() == 0 ? null : negativePixels.toArray(new int[][] { {} }));
+				positivePixels.isEmpty() ? null : positivePixels.toArray(new int[][] { {} }),
+				negativePixels.isEmpty() ? null : negativePixels.toArray(new int[][] { {} }));
 	}
 
 	public static void main(String[] args) throws IOException {

@@ -6,10 +6,16 @@ import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Helper {
 
-	public final static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	public final static SimpleDateFormat SDF_FILE = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
+	private static final Logger LOGGER = LoggerFactory.getLogger(Helper.class);
+
+	// TODO: not used?
+	// private final SimpleDateFormat simpleDateFormat = new
+	// SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static BufferedImage copy(BufferedImage img) {
 		try {
@@ -22,7 +28,7 @@ public class Helper {
 			g2d.dispose();
 			return dimg;
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 		return null;
 	}
@@ -46,5 +52,12 @@ public class Helper {
 			result.append(c);
 		}
 		return result.toString();
+	}
+
+	/**
+	 * @return the simpleDateFormatFile
+	 */
+	public static SimpleDateFormat getSimpleDateFormatFile() {
+		return new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 	}
 }
