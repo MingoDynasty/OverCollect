@@ -147,7 +147,7 @@ public class Glyph {
 			int argb = image.getRGB(x, y);
 			int r = (argb >> 16) & 0xFF;
 			int g = (argb >> 8) & 0xFF;
-			int b = (argb >> 0) & 0xFF;
+			int b = 0xFF;
 			if (!(Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 					&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 				return false;
@@ -162,7 +162,7 @@ public class Glyph {
 				int argb = image.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = (argb >> 0) & 0xFF;
+				int b = 0xFF;
 				if ((Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 						&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 					return false;
@@ -172,7 +172,8 @@ public class Glyph {
 	}
 
 	public float matchPercentage(BufferedImage image, Color primary, float tolerance) {
-		float totalPoints = this.positivePixels.length + (this.negativePixels != null ? this.negativePixels.length : 0);
+		float totalPoints = (float) this.positivePixels.length
+				+ (this.negativePixels != null ? this.negativePixels.length : 0);
 		int ok = 0;
 		// image = image.
 		int rPrim = primary.getRed();
@@ -188,7 +189,7 @@ public class Glyph {
 			int argb = image.getRGB(x, y);
 			int r = (argb >> 16) & 0xFF;
 			int g = (argb >> 8) & 0xFF;
-			int b = (argb >> 0) & 0xFF;
+			int b = 0xFF;
 			if (!(Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 					&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 				continue;
@@ -206,7 +207,7 @@ public class Glyph {
 				int argb = image.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = (argb >> 0) & 0xFF;
+				int b = 0xFF;
 				if ((Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 						&& Math.abs((bPrim - b) / 255.0f) <= tolerance)) {
 					// LOGGER.info( "Negative misses " + x + ", " + y);

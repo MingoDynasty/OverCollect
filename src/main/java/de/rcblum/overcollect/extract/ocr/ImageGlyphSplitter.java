@@ -7,16 +7,20 @@ import java.util.List;
 import java.util.Objects;
 
 public class ImageGlyphSplitter {
+
+	private ImageGlyphSplitter() {
+	}
+
 	/**
 	 * Splits the Image by the primary color. Truncates all non-primary color
-	 * sections. The image is split horizontally and truncated vertically after
-	 * the last found primary color. <br>
+	 * sections. The image is split horizontally and truncated vertically after the
+	 * last found primary color. <br>
 	 * <br>
-	 * <b>Bugfix:</b> Splitting image did not work correctly if there were
-	 * artifacts with one pixel width. It would jump to the end of the next
-	 * number and include the whole whitespace in between. Fixed by resetting
-	 * the start position on the x axis, when no pixel was found and x-start was
-	 * set but x-end was not set, meaning there was only an artifact of 1 pixel width.
+	 * <b>Bugfix:</b> Splitting image did not work correctly if there were artifacts
+	 * with one pixel width. It would jump to the end of the next number and include
+	 * the whole whitespace in between. Fixed by resetting the start position on the
+	 * x axis, when no pixel was found and x-start was set but x-end was not set,
+	 * meaning there was only an artifact of 1 pixel width.
 	 * 
 	 * @param biSource
 	 *            Image that should be split
@@ -24,11 +28,12 @@ public class ImageGlyphSplitter {
 	 *            Primary Color after which the image should be split
 	 * @param tolerance
 	 *            Tolerance for deviation to the primary color. Accepted values:
-	 *            0.0..1.0. Values that differentiate form the accepted range
-	 *            will be reduced to either 0 or 1.
+	 *            0.0..1.0. Values that differentiate form the accepted range will
+	 *            be reduced to either 0 or 1.
 	 * @return Array with the images split by the primary color.
 	 */
-	public static BufferedImage[] splitImage(BufferedImage biSource, Color primary, float tolerance, int pixelDetectionCount) {
+	public static BufferedImage[] splitImage(BufferedImage biSource, Color primary, float tolerance,
+			int pixelDetectionCount) {
 		pixelDetectionCount = pixelDetectionCount == 0 ? 1 : pixelDetectionCount;
 		Objects.requireNonNull(biSource);
 		Objects.requireNonNull(primary);
@@ -41,28 +46,29 @@ public class ImageGlyphSplitter {
 			int pr = primary.getRed();
 			int pg = primary.getGreen();
 			int pb = primary.getBlue();
-			int cCount=0;
-			int hCount=0;
+			int cCount = 0;
+			int hCount = 0;
 			// Find right and left bounds of the next number
 			for (int y = 0; y < biSource.getHeight(); y++) {
 				int argb = biSource.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = (argb >> 0) & 0xFF;
-				boolean foundFontColor = Math.abs(r - pr) / 255.0 < tolerance
-						&& Math.abs(g - pg) / 255.0 < tolerance && Math.abs(b - pb) / 255.0 < tolerance;
+				int b = 0xFF;
+				boolean foundFontColor = Math.abs(r - pr) / 255.0 < tolerance && Math.abs(g - pg) / 255.0 < tolerance
+						&& Math.abs(b - pb) / 255.0 < tolerance;
 				if (foundFontColor)
 					cCount++;
 				if (cCount >= pixelDetectionCount && glyphLeftBound < 0) {
 					glyphLeftBound = x;
-//					glyphRightBound = x;
-//					break;
+					// glyphRightBound = x;
+					// break;
 				}
-				if (cCount>= pixelDetectionCount)
-						glyphRightBound = x;
-				// Reset left bound position of the sub-image, if there was only one pixel of primary color 
-//				if (!foundFontColor && glyphLeftBound >= 0 && glyphRightBound < 0)
-//					glyphLeftBound = -1;
+				if (cCount >= pixelDetectionCount)
+					glyphRightBound = x;
+				// Reset left bound position of the sub-image, if there was only one pixel of
+				// primary color
+				// if (!foundFontColor && glyphLeftBound >= 0 && glyphRightBound < 0)
+				// glyphLeftBound = -1;
 			}
 			// Find top and bottom bounds
 			if (glyphRightBound >= 0 && glyphRightBound < x && glyphRightBound < biSource.getWidth()) {
@@ -73,7 +79,7 @@ public class ImageGlyphSplitter {
 						int argb = biSource.getRGB(xsub, ysub);
 						int r = (argb >> 16) & 0xFF;
 						int g = (argb >> 8) & 0xFF;
-						int b = (argb >> 0) & 0xFF;
+						int b = 0xFF;
 						boolean foundFontColor = Math.abs(r - pr) / 255.0 < tolerance
 								&& Math.abs(g - pg) / 255.0 < tolerance && Math.abs(b - pb) / 255.0 < tolerance;
 						if (foundFontColor)

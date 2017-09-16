@@ -215,7 +215,7 @@ public class JLabel2D extends JLabel {
 		Shape src = tl.getOutline(shear);
 		Rectangle rText = src.getBounds();
 
-		float xText = x - rText.x;
+		int xText = x - rText.x;
 		switch (getHorizontalAlignment()) {
 		case CENTER:
 			xText = x + (w - rText.width) / 2;
@@ -226,7 +226,7 @@ public class JLabel2D extends JLabel {
 		}
 		float yText = y + h / 2 + tl.getAscent() / 4;
 
-		AffineTransform shift = AffineTransform.getTranslateInstance(xText, yText);
+		AffineTransform shift = AffineTransform.getTranslateInstance((float) xText, yText);
 		Shape shp = shift.createTransformedShape(src);
 
 		if (outlineColor != null) {
