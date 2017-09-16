@@ -123,7 +123,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
 			ImageIO.write(br, "PNG", debugFile.toFile());
 		} catch (IOException ioe) {
-			LOGGER.error("Exception: {}", ioe);
+			LOGGER.error("IOException: ", ioe);
 		}
 	}
 

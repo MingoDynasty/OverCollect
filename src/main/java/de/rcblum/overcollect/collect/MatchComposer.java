@@ -49,7 +49,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 
 	/**
 	 * This Class sorts the received image into the flow of a match, e. g. it
-	 * recognises when a Match starts, finishes, when stats come up etc.
+	 * recognizes when a Match starts, finishes, when stats come up etc.
 	 * 
 	 * @author Roland von Werden
 	 *
@@ -64,16 +64,25 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 			this.item = Objects.requireNonNull(item);
 		}
 
+		// TODO: issue with this logic
+		// @Override
+		// public void run() {
+		// try {
+		// if (duplicateThreshold.containsKey(item.getItemName())) {
+		// LOGGER.debug("Item already found.");
+		// return;
+		// }
+		//
+		// if (duplicateThreshold.get(item.getItemName()) <
+		// OWLib.getInstance().getInteger("duplicateThreshold",
+		// 4)) {
+
 		@Override
 		public void run() {
 			try {
-				if (duplicateThreshold.containsKey(item.getItemName())) {
-					LOGGER.debug("Item already found.");
-					return;
-				}
+				if (!duplicateThreshold.containsKey(item.getItemName()) || duplicateThreshold
+						.get(item.getItemName()) < OWLib.getInstance().getInteger("duplicateThreshold", 4)) {
 
-				if (duplicateThreshold.get(item.getItemName()) < OWLib.getInstance().getInteger("duplicateThreshold",
-						4)) {
 					LOGGER.info("Filter found: {}", item.getItemName());
 					if (matchIndicators.contains(item.getItemName()) && !matchIndicators.contains(lastItem))
 						newMatch(i, item);
@@ -308,14 +317,13 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 					&& !isDirEmpty(Paths.get(this.matchRoot, this.currentMatch.toString(), "stats"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("IOException: ", e);
 		}
 		if (!finished) {
 			try {
 				Files.createFile(Paths.get(this.matchRoot, this.currentMatch.toString(), "aborted"));
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				LOGGER.error("IOException: ", e1);
 			}
 		}
 
@@ -323,7 +331,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 			try {
 				Files.createFile(Paths.get(this.matchRoot, this.currentMatch.toString(), "incomplete"));
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				LOGGER.error("IOException: ", e1);
 			}
 		}
 
@@ -477,7 +485,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 		this.duplicateThreshold.clear();
 		this.screenshots.clear();
 		this.stacksize = 1;
-		LOGGER.info("New Match detected: " + this.currentMatch.toString());
+		LOGGER.info("New Match detected: {}", this.currentMatch);
 		this.startDate = Calendar.getInstance().getTime();
 		this.screenshots.put(item, i);
 		OWMatchEvent e = new OWMatchEvent(this.currentMatch, this.startDate,
@@ -531,8 +539,8 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 
 			try {
 				Thread.sleep(captureInterval);
-			} catch (InterruptedException ioe) {
-				LOGGER.error("InterruptedException: {}", ioe);
+			} catch (InterruptedException ie) {
+				LOGGER.error("InterruptedException: ", ie);
 				Thread.currentThread().interrupt();
 				break;
 			}
@@ -555,7 +563,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 	 */
 	private void setMap(BufferedImage i, OWItem item) {
 		if (currentMatch != null) {
-			LOGGER.info("Map detected: " + item.getItemName().replace("_", " "));
+			LOGGER.info("Map detected: {}", item.getItemName().replace("_", " "));
 			this.map = item.getItemName();
 			this.screenshots.put(item, i);
 		}

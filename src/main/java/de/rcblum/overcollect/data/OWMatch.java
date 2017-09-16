@@ -10,18 +10,22 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import de.rcblum.overcollect.utils.Helper;
 
 public class OWMatch {
+	private static final Logger LOGGER = LoggerFactory.getLogger(OWMatch.class);
 
-	public static enum Result {
+	public enum Result {
 		VICTORY, DEFEAT, DRAW;
 	}
 
-	private final static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public static OWMatch fromJsonFile(File jFile) {
 		OWMatch match = null;
@@ -30,7 +34,7 @@ public class OWMatch {
 			String text = new String(Files.readAllBytes(jFile.toPath()), StandardCharsets.UTF_8);
 			match = g.fromJson(text, OWMatch.class);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 		return match;
 	}
@@ -40,7 +44,7 @@ public class OWMatch {
 		try {
 			Files.write(jFile.toPath(), g.toJson(m).getBytes("UTF-8"));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 	}
 
@@ -90,9 +94,9 @@ public class OWMatch {
 
 	public Date getEndTime() {
 		try {
-			return SDF.parse(this.endTime);
+			return simpleDateFormat.parse(this.endTime);
 		} catch (ParseException | NullPointerException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 		return null;
 	}
@@ -125,9 +129,9 @@ public class OWMatch {
 
 	public Date getStartTime() {
 		try {
-			return SDF.parse(this.startTime);
+			return simpleDateFormat.parse(this.startTime);
 		} catch (ParseException | NullPointerException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 		return null;
 	}

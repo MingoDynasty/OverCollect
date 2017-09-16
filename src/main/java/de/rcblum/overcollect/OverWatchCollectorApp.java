@@ -184,13 +184,15 @@ public class OverWatchCollectorApp {
 			else
 				throw new ClassNotFoundException("Class not anm instance of Image Source");
 		} catch (NullPointerException | InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
-			LOGGER.error("Exception: ", e1);
+			LOGGER.error(
+					"NullPointerException | InstantiationException | IllegalAccessException | ClassNotFoundException: ",
+					e1);
 			LOGGER.debug("Fallback: initializing RobotCaptureEngine");
 			captureEngine = new RobotCaptureEngine();
 		}
 
 		/**
-		 * Filter screenshotrs for relevant images
+		 * Filter screenshots for relevant images
 		 */
 		filterEngine = new FilterEngine();
 
@@ -214,7 +216,7 @@ public class OverWatchCollectorApp {
 			extractor = new MatchExtractor(matchPath, imagePath, dataPath);
 			matchComposer.addOWMatchListener(extractor);
 		} catch (IOException e) {
-			LOGGER.error("Exception: ", e);
+			LOGGER.error("IOException: ", e);
 		}
 	}
 

@@ -59,8 +59,7 @@ public class OWLib {
 			if (!Files.exists(tempDir))
 				Files.createDirectories(tempDir);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 	}
 	//
@@ -384,7 +383,7 @@ public class OWLib {
 		try (OutputStream os = Files.newOutputStream(this.libPath.resolve("configuration.properties"))) {
 			this.config.store(os, "");
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Failed to save config.", e);
 		}
 
 	}

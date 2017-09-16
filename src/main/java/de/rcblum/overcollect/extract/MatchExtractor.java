@@ -406,8 +406,9 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 				addMatch(this.events.poll().matchPath);
 			try {
 				Thread.sleep(OWLib.getInstance().getInteger("captureInterval", 1000));
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			} catch (InterruptedException ie) {
+				LOGGER.error("InterruptedException: ", ie);
+				Thread.currentThread().interrupt();
 				break;
 			}
 		}

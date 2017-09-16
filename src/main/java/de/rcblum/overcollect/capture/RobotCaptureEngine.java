@@ -96,7 +96,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
 			ImageIO.write(br, "PNG", debugFile.toFile());
 		} catch (IOException e1) {
-			LOGGER.error("Exception: ", e1);
+			LOGGER.error("IOException: ", e1);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 			try {
 				robots[i] = new Robot(screens[i]);
 			} catch (AWTException e) {
-				LOGGER.error("Exception: ", e);
+				LOGGER.error("AWTException: ", e);
 			}
 		}
 		for (int i = 0; i < robots.length; i++) {
