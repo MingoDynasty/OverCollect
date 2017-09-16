@@ -84,7 +84,7 @@ public class OverWatchCollectorApp {
 						JFilterSetup frame = new JFilterSetup();
 						frame.setVisible(true);
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOGGER.error("Exception: ", e);
 					}
 				}
 			});
@@ -96,7 +96,7 @@ public class OverWatchCollectorApp {
 						JFilterTest frame = new JFilterTest();
 						frame.setVisible(true);
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOGGER.error("Exception: ", e);
 					}
 				}
 			});
@@ -108,7 +108,7 @@ public class OverWatchCollectorApp {
 						JOCRSetup frame = new JOCRSetup();
 						frame.setVisible(true);
 					} catch (Exception e) {
-						e.printStackTrace();
+						LOGGER.error("Exception: ", e);
 					}
 				}
 			});
@@ -117,16 +117,19 @@ public class OverWatchCollectorApp {
 		} else {
 			OverWatchCollectorApp app = new OverWatchCollectorApp();
 			app.startCapture();
-			JOverCollectFrame f = new JOverCollectFrame(app);
-			if (OWLib.getInstance().getAccounts().size() == 0) {
-				String accountName = f.showAccountCreation();
+			JOverCollectFrame jOverCollectFrame = new JOverCollectFrame(app);
+			if (OWLib.getInstance().getAccounts().isEmpty()) {
+				LOGGER.debug("No accounts found. Asking user to create account...");
+				String accountName = jOverCollectFrame.showAccountCreation();
+
+				LOGGER.debug("Creating account: {}", accountName);
 				OWLib.getInstance().setActiveAccount(accountName);
 			}
 			// JOwCaptureStatus mapPanel = new JOwCaptureStatus();
 			// f.getContentPane().add(mapPanel);
 			// f.pack();
 			// f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			f.setVisible(true);
+			jOverCollectFrame.setVisible(true);
 			// app.addOWMatchListener(mapPanel);
 			// app.addImageListener(mapPanel);
 
@@ -174,14 +177,14 @@ public class OverWatchCollectorApp {
 					: OWLib.getInstance().getString("engines.capture",
 							"de.rcblum.overcollect.capture.RobotCaptureEngine");
 			LOGGER.info("Loading capture engine: {}", className);
-			Class classObject = Class.forName(className);
+			Class<?> classObject = Class.forName(className);
 			Object captureObject = classObject.newInstance();
 			if (captureObject instanceof ImageSource)
 				captureEngine = (ImageSource) captureObject;
 			else
 				throw new ClassNotFoundException("Class not anm instance of Image Source");
 		} catch (NullPointerException | InstantiationException | IllegalAccessException | ClassNotFoundException e1) {
-			e1.printStackTrace();
+			LOGGER.error("Exception: ", e1);
 			LOGGER.debug("Fallback: initializing RobotCaptureEngine");
 			captureEngine = new RobotCaptureEngine();
 		}
@@ -211,7 +214,7 @@ public class OverWatchCollectorApp {
 			extractor = new MatchExtractor(matchPath, imagePath, dataPath);
 			matchComposer.addOWMatchListener(extractor);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception: ", e);
 		}
 	}
 

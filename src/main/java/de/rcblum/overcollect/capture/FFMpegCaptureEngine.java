@@ -110,7 +110,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 				this.saveCaptureScreen(br);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Exception: {}", e);
+			LOGGER.error("Failed to grab screen.", e);
 		}
 	}
 
@@ -174,7 +174,7 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 						}
 					}
 				} catch (Exception e) {
-					LOGGER.error("Exception: {}", e);
+					LOGGER.error("Exception: ", e);
 				}
 			}
 		}

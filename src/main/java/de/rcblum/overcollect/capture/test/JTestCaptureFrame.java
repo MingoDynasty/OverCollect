@@ -14,6 +14,7 @@ import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
+import java.io.Serializable;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -25,13 +26,19 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import de.rcblum.overcollect.capture.RobotCaptureEngine;
 import de.rcblum.overcollect.capture.listener.ImageListener;
 
 public class JTestCaptureFrame extends JFrame implements ImageListener {
+	private static final Logger LOGGER = LoggerFactory.getLogger(JTestCaptureFrame.class);
 
 	/**
+	 * A unique serial version identifier
 	 * 
+	 * @see Serializable#serialVersionUID
 	 */
 	private static final long serialVersionUID = -6380383693767869767L;
 
@@ -46,11 +53,12 @@ public class JTestCaptureFrame extends JFrame implements ImageListener {
 					JTestCaptureFrame frame = new JTestCaptureFrame();
 					frame.setVisible(true);
 				} catch (Exception e) {
-					e.printStackTrace();
+					LOGGER.error("Exception: ", e);
 				}
 			}
 		});
 	}
+
 	private JPanel contentPane;
 	private JLabel pImage;
 
@@ -67,6 +75,7 @@ public class JTestCaptureFrame extends JFrame implements ImageListener {
 	 * @throws AWTException
 	 */
 	public JTestCaptureFrame() throws AWTException {
+		LOGGER.info("Initializing class: {}", this.getClass().getName());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 650, 400);
 		contentPane = new JPanel();
@@ -96,8 +105,7 @@ public class JTestCaptureFrame extends JFrame implements ImageListener {
 					if (cboxDevices.getSelectedItem() != null)
 						engine.setScreen((GraphicsDevice) cboxDevices.getSelectedItem());
 				} catch (AWTException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					LOGGER.error("Exception: ", e1);
 				}
 			}
 		});
@@ -121,14 +129,16 @@ public class JTestCaptureFrame extends JFrame implements ImageListener {
 			}
 		});
 
+		LOGGER.info("Class initialized: {}", this.getClass().getName());
 	}
 
 	@Override
 	public void addImage(BufferedImage i) {
-		if (chckbxPreview.isSelected())
+		if (chckbxPreview.isSelected()) {
 			this.pImage.setIcon(new ImageIcon(this.getScaledImage(i, this.pImage.getWidth(), this.pImage.getHeight())));
-		else
+		} else {
 			this.pImage.setIcon(null);
+		}
 	}
 
 	private Image getScaledImage(Image srcImg, int w, int h) {

@@ -74,13 +74,11 @@ public class JOverCollectFrame extends JFrame {
 	}
 
 	public String showAccountCreation() {
-		String name = JOptionPane.showInputDialog(this, "Add Account:", null);
-		return name;
+		return JOptionPane.showInputDialog(this, "Add Account:", null);
 	}
 
 	public String showSeasonCreation() {
-		String name = JOptionPane.showInputDialog(this, "Add Season:", null);
-		return name;
+		return JOptionPane.showInputDialog(this, "Add Season:", null);
 	}
 
 	public void updateMatchList(boolean allSeasons) {

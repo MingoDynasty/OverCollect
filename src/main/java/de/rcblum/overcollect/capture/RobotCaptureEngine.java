@@ -36,9 +36,9 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 
 	private List<ImageListener> listeners = new ArrayList<>(5);
 
-	private Robot r = null;
+	private Robot robot = null;
 
-	private Timer t = null;
+	private Timer timer = null;
 
 	private GraphicsDevice screen = null;
 
@@ -51,44 +51,52 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 		// this.screen = Objects.requireNonNull(screen);
 		// this.r = new Robot(screen);
 		LOGGER.info("captureInterval: {}", this.captureInterval);
-		t = new Timer(this.captureInterval, this);
+		timer = new Timer(this.captureInterval, this);
 	}
 
 	public RobotCaptureEngine(GraphicsDevice screen) throws AWTException {
 		this.screen = Objects.requireNonNull(screen);
 		this.captureInterval = OWLib.getInstance().getInteger("captureInterval", 1000);
-		this.r = new Robot(screen);
-		t = new Timer(this.captureInterval, this);
+		this.robot = new Robot(screen);
+		timer = new Timer(this.captureInterval, this);
 	}
 
 	public RobotCaptureEngine(int captureInterval) throws AWTException {
 		this.captureInterval = captureInterval;
 		// this.screen = Objects.requireNonNull(screen);
 		// this.r = new Robot(screen);
-		t = new Timer(this.captureInterval, this);
+		timer = new Timer(this.captureInterval, this);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (this.screen == null)
+		LOGGER.trace("Action performed.");
+		if (this.screen == null) {
 			autodetectScreen();
-		else {
-			BufferedImage br = r.createScreenCapture(this.screen.getDefaultConfiguration().getBounds());
-			this.fireImage(br);
-			if (OWLib.getInstance().getBoolean("debug.capture")) {
-				try {
-					Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
-					if (!Files.exists(debugPath)) {
-						Files.createDirectories(debugPath);
-					}
-					Path debugFile = debugPath
-							.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
-					ImageIO.write(br, "PNG", debugFile.toFile());
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+		} else {
+			this.grabScreen();
+		}
+	}
+
+	private void grabScreen() {
+		LOGGER.trace("Grabbing screen...");
+		BufferedImage br = robot.createScreenCapture(this.screen.getDefaultConfiguration().getBounds());
+		this.fireImage(br);
+		if (OWLib.getInstance().getBoolean("debug.capture")) {
+			this.saveCaptureScreen(br);
+		}
+	}
+
+	private void saveCaptureScreen(BufferedImage br) {
+		try {
+			Path debugPath = Paths.get(OWLib.getInstance().getDebugDir(), "capture");
+			if (!Files.exists(debugPath)) {
+				Files.createDirectories(debugPath);
 			}
+			Path debugFile = debugPath.resolve(Helper.SDF_FILE.format(new Date(System.currentTimeMillis())) + ".png");
+			ImageIO.write(br, "PNG", debugFile.toFile());
+		} catch (IOException e1) {
+			LOGGER.error("Exception: ", e1);
 		}
 	}
 
@@ -104,6 +112,8 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	}
 
 	private void autodetectScreen() {
+		LOGGER.debug("Searching for screen...");
+
 		// Wait for Overwatch to launch
 		OWLib lib = OWLib.getInstance();
 
@@ -118,7 +128,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 			try {
 				robots[i] = new Robot(screens[i]);
 			} catch (AWTException e) {
-				e.printStackTrace();
+				LOGGER.error("Exception: ", e);
 			}
 		}
 		for (int i = 0; i < robots.length; i++) {
@@ -132,7 +142,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 					if (itemStart.hasFilter() && itemStart.getFilter().match(br)
 							|| itemMain.hasFilter() && itemMain.getFilter().match(br)) {
 						this.screen = screen;
-						this.r = robot;
+						this.robot = robot;
 						LOGGER.info("Screen found");
 						break;
 					}
@@ -186,7 +196,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	 */
 	@Override
 	public boolean isRunning() {
-		return this.t.isRunning();
+		return this.timer.isRunning();
 	}
 
 	/*
@@ -218,11 +228,11 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	 */
 	@Override
 	public void setScreen(GraphicsDevice screen) throws AWTException {
-		boolean isRunning = this.t.isRunning();
+		boolean isRunning = this.timer.isRunning();
 		if (isRunning)
 			this.stop();
 		this.screen = Objects.requireNonNull(screen);
-		this.r = new Robot(this.screen);
+		this.robot = new Robot(this.screen);
 		if (isRunning)
 			this.start();
 	}
@@ -235,7 +245,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	@Override
 	public void start() {
 		LOGGER.info("Start capture");
-		this.t.start();
+		this.timer.start();
 	}
 
 	/*
@@ -246,7 +256,7 @@ public class RobotCaptureEngine implements ActionListener, ImageSource {
 	@Override
 	public void stop() {
 		LOGGER.info("Stop capture");
-		this.t.stop();
+		this.timer.stop();
 	}
 
 }

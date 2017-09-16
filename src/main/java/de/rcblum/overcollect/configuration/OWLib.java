@@ -69,14 +69,17 @@ public class OWLib {
 
 	public static final String VERSION_STRING = "0.2.1-alpha";
 
-	private static String defaultFolder = Paths.get("lib", "owdata").toString();
+	// TODO: is this assignment even necessary?
+	// private static String defaultFolder = Paths.get("lib", "owdata").toString();
 
 	private static Map<String, OWLib> instances = new HashMap<>();
 
 	public static OWLib getInstance() {
-		defaultFolder = System.getProperties().getProperty("owcollect.lib.dir");
-		if (instances.get(defaultFolder) == null)
+		// defaultFolder = System.getProperties().getProperty("owcollect.lib.dir");
+		final String defaultFolder = System.getProperties().getProperty("owcollect.lib.dir");
+		if (instances.get(defaultFolder) == null) {
 			instances.put(defaultFolder, new OWLib(defaultFolder));
+		}
 		return instances.get(defaultFolder);
 	}
 
@@ -280,47 +283,83 @@ public class OWLib {
 	}
 
 	private void init() {
-		File[] resolutionFolders = this.libPath.toFile().listFiles();
-		Arrays.sort(resolutionFolders);
-		// load accounts
+		LOGGER.debug("Initializing class: {}", this.getClass().getName());
+		this.loadAccounts();
+		this.loadSeasons();
+
+		this.findAllResolutions();
+		this.findAllConfigItems();
+		this.findAllMatches();
+		LOGGER.debug("Class initialized: {}", this.getClass().getName());
+	}
+
+	private void loadAccounts() {
+		LOGGER.info("Loading accounts...");
 		this.accounts = new LinkedList<>(this.config.getProperty("accounts") != null
 				? Arrays.asList(this.config.getProperty("accounts").split(","))
 				: new LinkedList<>());
+		for (String account : this.accounts) {
+			LOGGER.debug("Found account: {}", account);
+		}
+
 		this.selectedAccount = this.config.getProperty("activeAccount");
-		// Load Seasons
+		LOGGER.debug("Selected account: {}", this.selectedAccount);
+	}
+
+	private void loadSeasons() {
+		LOGGER.info("Loading seasons...");
 		this.seasons = new LinkedList<>(this.config.getProperty("seasons") != null
 				? Arrays.asList(this.config.getProperty("seasons").split(","))
 				: new LinkedList<>());
-		this.selectedSeason = this.config.getProperty("activeSeason");
+		for (String season : this.seasons) {
+			LOGGER.debug("Found season: {}", season);
+		}
 
-		// Find all resolutions
+		this.selectedSeason = this.config.getProperty("activeSeason");
+		LOGGER.debug("Selected season: {}", this.selectedSeason);
+	}
+
+	private void findAllResolutions() {
+		LOGGER.info("Finding all resolutions...");
+		File[] resolutionFolders = this.libPath.toFile().listFiles();
+		Arrays.sort(resolutionFolders);
+
 		for (File res : resolutionFolders) {
 			if (res.isDirectory()) {
 				String[] dimensionStrings = res.getName().split("x");
 				if (dimensionStrings.length == 2 && dimensionStrings[0].matches("\\d+")
 						&& dimensionStrings[1].matches("\\d+")) {
-
+					LOGGER.warn("Shouldn't something go into this empty block???");
 				}
+				LOGGER.trace("Found resolution: {}", res.getPath());
 				this.supportedScreenResolutions.add(res.getName());
 			}
 		}
-		// Find all config items
+	}
+
+	private void findAllConfigItems() {
+		LOGGER.info("Finding all config items...");
 		for (String res : this.supportedScreenResolutions) {
 			this.items.put(res, new HashMap<>());
 			File[] items = this.libPath.resolve(res).toFile().listFiles();
 			Arrays.sort(items);
 			for (File item : items) {
 				if (item.exists() && item.isDirectory()) {
+					LOGGER.trace("Found config item: {}", item.getPath());
 					this.items.get(res).put(item.getName(), new OWItem(res, item.getName(), this.libPath.toString()));
 				}
 
 			}
 		}
+	}
+
+	private void findAllMatches() {
 		// Find all Matches
+		LOGGER.info("Finding all matches...");
 		this.matches = new HashMap<>();
 		File[] matchFiles = Paths.get(System.getProperties().getProperty("owcollect.data.dir")).toFile().listFiles();
 		for (File match : matchFiles) {
-			LOGGER.info("match: {}", match);
+			LOGGER.debug("Found match: {}", match);
 			OWMatch m = OWMatch.fromJsonFile(match);
 			if (m != null) {
 				this.matches.put(m.getMatchId(), m);
