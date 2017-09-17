@@ -40,6 +40,9 @@ public class FFMpegCaptureEngine implements ActionListener, ImageSource {
 
 	FFmpegFrameGrabber[] availableScreens = new FFmpegFrameGrabber[screens.length];
 
+	// TODO: why use a Java Swing timer?? Is this class for an actual Swing
+	// component?
+	// Consider quartz or java.util.Timer instead.
 	private Timer timer = null;
 
 	private int captureInterval = 1000;

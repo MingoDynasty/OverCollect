@@ -289,8 +289,8 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 	}
 
 	private void setData() {
-		this.myBackground = ImageCache.getImageFromResource(
-				"/ui/background/" + this.match.getMap().replaceAll("_", "").trim() + ".png");
+		this.myBackground = ImageCache
+				.getImageFromResource("/ui/background/" + this.match.getMap().replaceAll("_", "").trim() + ".png");
 		// try loading the default Image
 		if (this.myBackground == null) {
 			this.myBackground = ImageCache.getImageFromResource("/ui/background/default.png");
@@ -298,8 +298,9 @@ public class JOWMatchPanel extends JPanel implements IAnimatable {
 		this.lblSr.setText(this.match.getSr() != -1 ? this.match.getSr() + " " : "N/A ");
 		this.lblTeamSr.setText(this.match.getTeamSr() + " ");
 		this.lblEnemySr.setText(this.match.getEnemySr() + " ");
-		this.lblDate.setText(this.match.getStartTime() != null
-				? UiStatics.getUiDateFormat().format(this.match.getStartTime()) + " " : "--");
+		this.lblDate.setText(
+				this.match.getStartTime() != null ? UiStatics.getUiDateFormat().format(this.match.getStartTime()) + " "
+						: "--");
 		// Match result
 		if (this.match.isVictory()) {
 			lblResult.setForeground(UiStatics.TEXT_COLOR_VICTORY);

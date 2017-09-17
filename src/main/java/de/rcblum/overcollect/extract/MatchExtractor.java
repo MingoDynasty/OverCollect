@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -42,7 +44,7 @@ import de.rcblum.overcollect.extract.listener.OWMatchExtractionListener;
 import de.rcblum.overcollect.extract.ocr.Glyph;
 import de.rcblum.overcollect.utils.Helper;
 
-public class MatchExtractor implements Runnable, OWMatchListener {
+public class MatchExtractor extends TimerTask implements OWMatchListener {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchExtractor.class);
 
 	/**
@@ -322,9 +324,20 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			stream.filter(p -> Files.exists(p.resolve("done")) && !Files.exists(p.resolve("extracted"))
 					&& !Files.exists(p.resolve("aborted"))).forEach(p -> this.addMatch(p));
 		}
-		this.daemon = new Thread(this);
-		this.daemon.setDaemon(true);
-		this.daemon.start();
+		// this.daemon = new Thread(this);
+		// this.daemon.setDaemon(true);
+		// this.daemon.start();
+		this.schedule();
+	}
+
+	private void schedule() {
+		LOGGER.debug("Scheduling match extractor...");
+		final int initialDelay = 0;
+		final int captureInterval = OWLib.getInstance().getInteger("captureInterval", 1000);
+
+		Timer time = new Timer();
+		time.schedule(this, initialDelay, captureInterval);
+		LOGGER.debug("Match extractor scheduled with initialDelay={}, period={}.", initialDelay, captureInterval);
 	}
 
 	public void addExtractionListener(OWMatchExtractionListener extractionListener) {
@@ -338,6 +351,7 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 	 *            path to the match-folder
 	 */
 	private void addMatch(Path matchPath) {
+		LOGGER.debug("Adding match: {}", matchPath);
 		try {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
 				LOGGER.debug("Adding match to be extraced: " + matchPath.getFileName().toString() + "["
@@ -406,17 +420,10 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 
 	@Override
 	public void run() {
-		for (;;) {
-			while (!this.events.isEmpty())
-				addMatch(this.events.poll().matchPath);
-			try {
-				Thread.sleep(OWLib.getInstance().getInteger("captureInterval", 1000));
-			} catch (InterruptedException ie) {
-				LOGGER.error("InterruptedException: ", ie);
-				Thread.currentThread().interrupt();
-				break;
-			}
+		LOGGER.trace("Polling for events...");
+		while (!this.events.isEmpty()) {
+			LOGGER.trace("Events found.");
+			addMatch(this.events.poll().matchPath);
 		}
-
 	}
 }

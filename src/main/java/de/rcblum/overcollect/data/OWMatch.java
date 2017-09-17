@@ -25,7 +25,8 @@ public class OWMatch {
 		VICTORY, DEFEAT, DRAW;
 	}
 
-	private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	// private static final DateTimeFormatter dateTimeFormatter =
+	// DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 
 	public static OWMatch fromJsonFile(File jFile) {
 		OWMatch match = null;
@@ -94,7 +95,7 @@ public class OWMatch {
 
 	public Date getEndTime() {
 		try {
-			return simpleDateFormat.parse(this.endTime);
+			return getMyDateFormat().parse(this.endTime);
 		} catch (ParseException | NullPointerException e) {
 			LOGGER.error("Exception: ", e);
 		}
@@ -127,9 +128,13 @@ public class OWMatch {
 		return stacksize;
 	}
 
+	private static SimpleDateFormat getMyDateFormat() {
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	}
+
 	public Date getStartTime() {
 		try {
-			return simpleDateFormat.parse(this.startTime);
+			return getMyDateFormat().parse(this.startTime);
 		} catch (ParseException | NullPointerException e) {
 			LOGGER.error("Exception: ", e);
 		}
