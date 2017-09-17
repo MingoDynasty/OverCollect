@@ -39,10 +39,13 @@ public class Glyph {
 			int[] pixel = filter.points[i];
 			// TODO: I should revisit this because I don't really know what this math is
 			// doing, and it could be a huge bug or a simple copy/paste error.
-			if (pixel[2] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d)
+			// if (pixel[2] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d && pixel[3] / 255.0
+			// < 0.06d)
+			if (pixel[2] / 255.0 < 0.06d && pixel[3] / 255.0 < 0.06d) {
 				positivePixels.add(new int[] { pixel[0], pixel[1] });
-			else
+			} else {
 				negativePixels.add(new int[] { pixel[0], pixel[1] });
+			}
 		}
 
 		return new Glyph(character, fontSize,

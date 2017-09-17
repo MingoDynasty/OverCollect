@@ -65,8 +65,8 @@ public class FontUtils {
 	}
 
 	public static void createFilter(Path imageRoot, boolean isPrimary) {
-		try {
-			List<Path> imagesPath = Files.list(imageRoot).filter(p -> p.toFile().isFile()).collect(Collectors.toList());
+		try (Stream<Path> stream = Files.list(imageRoot)) {
+			List<Path> imagesPath = stream.filter(p -> p.toFile().isFile()).collect(Collectors.toList());
 			Map<String, LinkedList<BufferedImage>> inputImages = new HashMap<>();
 			for (Path path : imagesPath) {
 				BufferedImage b = ImageIO.read(path.toFile());
@@ -214,9 +214,8 @@ public class FontUtils {
 
 	public static void mergeTestFiles(Path imageRoot, Path imageDest, boolean filterAgainstOtherGlyphs) {
 		if (imageRoot.toFile().exists() && imageRoot.toFile().isDirectory()) {
-			try {
-				List<Path> imagesPath = Files.list(imageRoot).filter(p -> p.toFile().isFile())
-						.collect(Collectors.toList());
+			try (Stream<Path> stream = Files.list(imageRoot)) {
+				List<Path> imagesPath = stream.filter(p -> p.toFile().isFile()).collect(Collectors.toList());
 				Map<String, LinkedList<BufferedImage>> inputImages = new HashMap<>();
 				Map<String, BufferedImage> mergedImages = new HashMap<>();
 				for (Path path : imagesPath) {

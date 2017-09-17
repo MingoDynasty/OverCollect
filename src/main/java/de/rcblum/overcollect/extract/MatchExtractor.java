@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Stream;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -210,8 +211,8 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 			// Extract overall-/hero-stats
 			Path stats = this.matchPath.resolve("stats");
 			if (stats.toFile().exists() && stats.toFile().isDirectory()) {
-				try {
-					Files.list(stats).filter(f -> f.toString().endsWith(".png")).forEach(f -> readStats(f));
+				try (Stream<Path> stream = Files.list(stats)) {
+					stream.filter(f -> f.toString().endsWith(".png")).forEach(f -> readStats(f));
 				} catch (Exception e) {
 					LOGGER.error("Exception: ", e);
 				}
@@ -317,8 +318,10 @@ public class MatchExtractor implements Runnable, OWMatchListener {
 		this.matchRoot = matchRoot;
 		this.imageRoot = imageRoot;
 		this.dataRoot = dataRoot;
-		Files.list(this.matchRoot).filter(p -> Files.exists(p.resolve("done")) && !Files.exists(p.resolve("extracted"))
-				&& !Files.exists(p.resolve("aborted"))).forEach(p -> this.addMatch(p));
+		try (Stream<Path> stream = Files.list(this.matchRoot)) {
+			stream.filter(p -> Files.exists(p.resolve("done")) && !Files.exists(p.resolve("extracted"))
+					&& !Files.exists(p.resolve("aborted"))).forEach(p -> this.addMatch(p));
+		}
 		this.daemon = new Thread(this);
 		this.daemon.setDaemon(true);
 		this.daemon.start();

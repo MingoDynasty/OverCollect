@@ -195,8 +195,8 @@ public class JLabel2D extends JLabel {
 		Insets ins = getInsets();
 		int x = ins.left;
 		int y = ins.top;
-		int w = d.width - ins.left - ins.right;
-		int h = d.height - ins.top - ins.bottom;
+		int width = d.width - ins.left - ins.right;
+		int height = d.height - ins.top - ins.bottom;
 
 		if (isOpaque()) {
 			g.setColor(getBackground());
@@ -218,15 +218,16 @@ public class JLabel2D extends JLabel {
 		int xText = x - rText.x;
 		switch (getHorizontalAlignment()) {
 		case CENTER:
-			xText = x + (w - rText.width) / 2;
+			xText = x + (width - rText.width) / 2;
 			break;
 		case RIGHT:
-			xText = x + (w - rText.width);
+			xText = x + (width - rText.width);
 			break;
 		}
-		float yText = y + h / 2 + tl.getAscent() / 4;
 
-		AffineTransform shift = AffineTransform.getTranslateInstance((float) xText, yText);
+		double yText = y + ((double) height / 2) + (tl.getAscent() / 4);
+
+		AffineTransform shift = AffineTransform.getTranslateInstance(xText, yText);
 		Shape shp = shift.createTransformedShape(src);
 
 		if (outlineColor != null) {

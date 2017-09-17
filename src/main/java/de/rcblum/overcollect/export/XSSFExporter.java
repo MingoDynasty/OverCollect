@@ -196,10 +196,13 @@ public class XSSFExporter {
 					c = row.createCell(cellIndex++);
 					c.setCellValue(match.getSr());
 					c = row.createCell(cellIndex++);
-					c.setCellValue(match.getSr()
+
+					int matchSrDelta = match.getSr()
 							- (previousMatch != null && previousMatch.getSr() != -1 ? previousMatch.getSr()
-									: match.getSr()));
-					c = row.createCell(cellIndex++);
+									: match.getSr());
+					c.setCellValue(matchSrDelta);
+
+					c = row.createCell(cellIndex);
 					c.setCellValue(match.getMatchId());
 				}
 				previousMatch = match;
@@ -262,8 +265,11 @@ public class XSSFExporter {
 			c = row.createCell(cellIndex++);
 			c.setCellValue(match.getSr());
 			c = row.createCell(cellIndex++);
-			c.setCellValue(match.getSr() - (previousMatch != null ? previousMatch.getSr() : match.getSr()));
-			c = row.createCell(cellIndex++);
+
+			int matchSrDelta = match.getSr() - (previousMatch != null ? previousMatch.getSr() : match.getSr());
+			c.setCellValue(matchSrDelta);
+
+			c = row.createCell(cellIndex);
 			c.setCellValue(match.getMatchId());
 			previousMatch = match;
 		}
