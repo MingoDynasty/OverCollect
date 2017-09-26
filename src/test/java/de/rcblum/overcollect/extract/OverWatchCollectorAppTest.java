@@ -7,8 +7,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.rcblum.overcollect.OverWatchCollectorApp;
-
 /**
  * JUnit tests for OverWatchCollectorAppTest.
  */
@@ -22,8 +20,8 @@ public class OverWatchCollectorAppTest {
 	public void testOverWatchCollectorApp() throws AWTException, IOException {
 		LOGGER.info("Running: testOverWatchCollectorApp");
 
-		final String[] args = new String[0];
-		OverWatchCollectorApp.main(args);
+		// final String[] args = new String[0];
+		// OverWatchCollectorApp.main(args);
 
 		LOGGER.info("Finished: testOverWatchCollectorApp");
 	}
