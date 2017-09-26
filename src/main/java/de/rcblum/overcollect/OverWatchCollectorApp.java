@@ -265,10 +265,14 @@ public class OverWatchCollectorApp {
 	}
 
 	public void startCapture() {
-		captureEngine.start();
+		this.captureEngine.start();
 	}
 
 	public void stopCapture() {
-		captureEngine.stop();
+		this.captureEngine.stop();
+	}
+
+	public ImageSource getCapture() {
+		return this.captureEngine;
 	}
 }

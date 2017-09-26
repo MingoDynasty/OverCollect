@@ -3,6 +3,7 @@ package de.rcblum.overcollect.capture.listener;
 import java.awt.AWTException;
 import java.awt.GraphicsDevice;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 
 public interface ImageSource {
 
@@ -25,5 +26,7 @@ public interface ImageSource {
 	void start();
 
 	void stop();
+
+	void fireImage(BufferedImage i);
 
 }
