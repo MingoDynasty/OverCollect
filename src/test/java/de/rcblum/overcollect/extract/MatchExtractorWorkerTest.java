@@ -66,8 +66,8 @@ public class MatchExtractorWorkerTest {
 		LOGGER.debug("teamSr: {}", teamSr);
 		LOGGER.debug("enemySr: {}", enemySr);
 
-		assertEquals(2586, teamSr);
-		assertEquals(2589, enemySr);
+		assertEquals("2586", teamSr);
+		assertEquals("2589", enemySr);
 
 		LOGGER.info("Finished: testCreateScreenExtract");
 	}
