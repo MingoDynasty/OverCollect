@@ -18,6 +18,10 @@ import de.rcblum.overcollect.extract.MatchExtractor.MatchExtractWorker;
 public class MatchExtractorWorkerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchExtractorWorkerTest.class);
 
+	/**
+	 * Test to ensure that createScreenExtract() can successfully extract team and
+	 * enemy SR values.
+	 */
 	@Test
 	public void testCreateScreenExtract() throws IOException {
 		LOGGER.info("Running: testCreateScreenExtract");
