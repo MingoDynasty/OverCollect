@@ -53,7 +53,7 @@ public class ImageGlyphSplitter {
 				int argb = biSource.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = 0xFF;
+				int b = argb & 0xFF;
 				boolean foundFontColor = Math.abs(r - pr) / 255.0 < tolerance && Math.abs(g - pg) / 255.0 < tolerance
 						&& Math.abs(b - pb) / 255.0 < tolerance;
 				if (foundFontColor)
@@ -79,7 +79,7 @@ public class ImageGlyphSplitter {
 						int argb = biSource.getRGB(xsub, ysub);
 						int r = (argb >> 16) & 0xFF;
 						int g = (argb >> 8) & 0xFF;
-						int b = 0xFF;
+						int b = argb & 0xFF;
 						boolean foundFontColor = Math.abs(r - pr) / 255.0 < tolerance
 								&& Math.abs(g - pg) / 255.0 < tolerance && Math.abs(b - pb) / 255.0 < tolerance;
 						if (foundFontColor)

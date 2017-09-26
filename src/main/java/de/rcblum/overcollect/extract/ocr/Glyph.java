@@ -95,7 +95,7 @@ public class Glyph {
 	public static void save(String libPath, String resolution, String alias, Glyph glyph) throws IOException {
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		Path glyphFile = Paths.get(libPath, resolution, alias, "glyph.json");
-		LOGGER.info(glyphFile.toString());
+		LOGGER.info("glyphFile: {}", glyphFile);
 		String text = gson.toJson(glyph);
 		Files.write(glyphFile, text.getBytes("UTF-8"));
 	}
@@ -150,7 +150,7 @@ public class Glyph {
 			int argb = image.getRGB(x, y);
 			int r = (argb >> 16) & 0xFF;
 			int g = (argb >> 8) & 0xFF;
-			int b = 0xFF;
+			int b = argb & 0xFF;
 			if (!(Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 					&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 				return false;
@@ -165,7 +165,7 @@ public class Glyph {
 				int argb = image.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = 0xFF;
+				int b = argb & 0xFF;
 				if ((Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 						&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 					return false;
@@ -192,7 +192,7 @@ public class Glyph {
 			int argb = image.getRGB(x, y);
 			int r = (argb >> 16) & 0xFF;
 			int g = (argb >> 8) & 0xFF;
-			int b = 0xFF;
+			int b = argb & 0xFF;
 			if (!(Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 					&& Math.abs((bPrim - b) / 255.0f) <= tolerance))
 				continue;
@@ -210,7 +210,7 @@ public class Glyph {
 				int argb = image.getRGB(x, y);
 				int r = (argb >> 16) & 0xFF;
 				int g = (argb >> 8) & 0xFF;
-				int b = 0xFF;
+				int b = argb & 0xFF;
 				if ((Math.abs((rPrim - r) / 255.0f) <= tolerance && Math.abs((gPrim - g) / 255.0f) <= tolerance
 						&& Math.abs((bPrim - b) / 255.0f) <= tolerance)) {
 					// LOGGER.info( "Negative misses " + x + ", " + y);
