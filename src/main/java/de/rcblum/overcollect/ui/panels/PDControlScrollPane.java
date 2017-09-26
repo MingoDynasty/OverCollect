@@ -52,7 +52,7 @@ public class PDControlScrollPane extends JScrollPane {
 		@Override
 		public void mouseWheelMoved(MouseWheelEvent e) {
 			JScrollPane parent = getParentScrollPane();
-			LOGGER.info("Parent scroll pane " + parent);
+			LOGGER.info("Parent scroll pane: {}", parent);
 			if (parent != null) {
 				/*
 				 * Only dispatch if we have reached top/bottom on previous scroll

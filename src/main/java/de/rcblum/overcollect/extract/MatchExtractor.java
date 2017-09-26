@@ -88,20 +88,30 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 		}
 
 		public ScreenExtract createScreenExtract(Path imagePath, Path ocrConfig) {
-			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				LOGGER.debug("Extracting: {}", imagePath.getFileName());
-			if (imagePath.toFile().exists() && ocrConfig.toFile().exists())
-				try {
-					BufferedImage image = ImageIO.read(imagePath.toFile());
-					String text = new String(Files.readAllBytes(ocrConfig), StandardCharsets.UTF_8);
-					OCRConfiguration config = g.fromJson(text, OCRConfiguration.class);
-					if (OWLib.getInstance().getBoolean("debug.extraction")) {
-						LOGGER.debug("OCR-Configuration.pixelDetectionCount: {}", config.pixelDetectionCount);
-					}
-					return new ScreenExtract(image, config);
-				} catch (IOException ioe) {
-					LOGGER.error("IOException: ", ioe);
+			// if (OWLib.getInstance().getBoolean("debug.extraction")) {
+			LOGGER.debug("Extracting: {}", imagePath.getFileName());
+
+			if (!imagePath.toFile().exists()) {
+				LOGGER.warn("imagePath does not exist: {}", imagePath);
+				return null;
+			}
+			if (!ocrConfig.toFile().exists()) {
+				LOGGER.warn("ocrConfig does not exist: {}", ocrConfig);
+				return null;
+			}
+
+			try {
+				BufferedImage image = ImageIO.read(imagePath.toFile());
+				String text = new String(Files.readAllBytes(ocrConfig), StandardCharsets.UTF_8);
+				OCRConfiguration config = g.fromJson(text, OCRConfiguration.class);
+				if (OWLib.getInstance().getBoolean("debug.extraction")) {
+					LOGGER.debug("OCR-Configuration.pixelDetectionCount: {}", config.pixelDetectionCount);
 				}
+				ScreenExtract sc = new ScreenExtract(image, config);
+				return sc;
+			} catch (IOException e) {
+				LOGGER.error("IOException: ", e);
+			}
 			return null;
 		}
 
@@ -142,10 +152,11 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 
 		@Override
 		public void run() {
-
-			if (OWLib.getInstance().getBoolean("debug.extraction"))
+			LOGGER.debug("Running match extractor...");
+			if (OWLib.getInstance().getBoolean("debug.extraction")) {
 				LOGGER.debug("Extracting match: " + matchPath.getFileName().toString() + "["
 						+ matchPath.toAbsolutePath().toString() + "]");
+			}
 			// Extract time and map
 			Properties properties = new Properties();
 			try (InputStream inD = Files.newInputStream(this.matchPath.resolve("data.properties"))) {
@@ -167,19 +178,21 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 			Path defeat = this.matchPath.resolve("_defeat.png");
 			Path victory = this.matchPath.resolve("_victory.png");
 			Path draw = this.matchPath.resolve("_draw.png");
-			if (Files.exists(victory))
+			if (Files.exists(victory)) {
 				this.match.setResult(Result.VICTORY);
-			else if (Files.exists(draw))
+			} else if (Files.exists(draw)) {
 				this.match.setResult(Result.DRAW);
-			else
+			} else {
 				this.match.setResult(Result.DEFEAT);
+			}
 			// Extract Team / Enemy Group SR
 			ScreenExtract sc = null;
 			if (properties.getProperty("map") != null
 					&& Files.exists(this.matchPath.resolve(properties.getProperty("map") + ".png"))
-					&& Files.exists(this.matchPath.resolve(properties.getProperty("map") + ".ocr")))
+					&& Files.exists(this.matchPath.resolve(properties.getProperty("map") + ".ocr"))) {
 				sc = createScreenExtract(this.matchPath.resolve(properties.getProperty("map") + ".png"),
 						this.matchPath.resolve(properties.getProperty("map") + ".ocr"));
+			}
 			if (sc != null) {
 				this.match.setTeamSr(sc.getValue("teamSR"));
 				this.match.setEnemySr(sc.getValue("enemySR"));
@@ -195,9 +208,10 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 			sc = null;
 			// Extract SR if possible
 			if (this.matchPath.resolve("_sr_screen.png").toFile().exists()
-					&& Files.exists(this.matchPath.resolve("_sr_screen.ocr")))
+					&& Files.exists(this.matchPath.resolve("_sr_screen.ocr"))) {
 				sc = createScreenExtract(this.matchPath.resolve("_sr_screen.png"),
 						this.matchPath.resolve("_sr_screen.ocr"));
+			}
 			if (sc != null) {
 				this.match.setSr(sc.getValue("sr"));
 				LOGGER.info("SR: " + sc.getValue("sr"));
@@ -354,7 +368,7 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 		LOGGER.debug("Adding match: {}", matchPath);
 		try {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
-				LOGGER.debug("Adding match to be extraced: " + matchPath.getFileName().toString() + "["
+				LOGGER.debug("Adding match to be extracted: " + matchPath.getFileName().toString() + "["
 						+ matchPath.toAbsolutePath().toString() + "]");
 			Path imagePath = this.imageRoot.resolve(matchPath.getFileName().toString());
 			if (!imagePath.toFile().exists())

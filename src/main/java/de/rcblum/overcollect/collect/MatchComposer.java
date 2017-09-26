@@ -55,12 +55,12 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 	 *
 	 */
 	public class ComposerTask implements Runnable {
-		private final BufferedImage i;
+		private final BufferedImage image;
 
 		private final OWItem item;
 
 		public ComposerTask(BufferedImage i, OWItem item) {
-			this.i = Objects.requireNonNull(i);
+			this.image = Objects.requireNonNull(i);
 			this.item = Objects.requireNonNull(item);
 		}
 
@@ -80,34 +80,61 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 		@Override
 		public void run() {
 			try {
+				// final String itemName = item.getItemName();
+				LOGGER.trace("Running composer task...");
+
 				if (!duplicateThreshold.containsKey(item.getItemName()) || duplicateThreshold
 						.get(item.getItemName()) < OWLib.getInstance().getInteger("duplicateThreshold", 4)) {
 
 					LOGGER.info("Filter found: {}", item.getItemName());
-					if (matchIndicators.contains(item.getItemName()) && !matchIndicators.contains(lastItem))
-						newMatch(i, item);
-					if (currentMatch != null && item.isMap())
-						setMap(i, item);
-					if (currentMatch != null && "_sr_screen".equals(item.getItemName()))
-						addSrScreen(i, item);
+					if (matchIndicators.contains(item.getItemName()) && !matchIndicators.contains(lastItem)) {
+						LOGGER.debug("Found new match.");
+						newMatch(image, item);
+					}
+					if (currentMatch != null && item.isMap()) {
+						LOGGER.debug("Found new match.");
+						setMap(image, item);
+					}
+					if (currentMatch != null && "_sr_screen".equals(item.getItemName())) {
+						LOGGER.debug("Found new SR screen.");
+						addSrScreen(image, item);
+					}
 					if (currentMatch != null && ("_defeat".equals(item.getItemName())
-							|| "_victory".equals(item.getItemName()) || "_draw".equals(item.getItemName())))
-						addRoundEnd(i, item);
-					if (currentMatch != null && "_main_menu".equals(item.getItemName()))
-						endMatch(i, item);
-					if (gameFinished && item.isHero())
-						addStats(i, item);
-					if (gameFinished && item.getItemName().contains("_stack"))
-						addStacksize(i, item);
+							|| "_victory".equals(item.getItemName()) || "_draw".equals(item.getItemName()))) {
+						LOGGER.debug("Found round end.");
+						addRoundEnd(image, item);
+					}
+					if (currentMatch != null && "_main_menu".equals(item.getItemName())) {
+						LOGGER.debug("Found end match.");
+						endMatch(image, item);
+					}
+					if (gameFinished && item.isHero()) {
+						LOGGER.debug("Found stats.");
+						addStats(image, item);
+					}
+					if (gameFinished && item.getItemName().contains("_stack")) {
+						LOGGER.debug("Found stack size.");
+						addStacksize(image, item);
+					}
 					duplicateThreshold.put(item.getItemName(),
 							duplicateThreshold.containsKey(item.getItemName())
 									? duplicateThreshold.get(item.getItemName()) + 1
 									: 1);
+
+					// int mingtest = 1;
+					// if (duplicateThreshold.containsKey(itemName)) {
+					// mingtest = duplicateThreshold.get(itemName) + 1;
+					// } else {
+					// mingtest = 1;
+					// }
+					// duplicateThreshold.put(itemName, mingtest);
+
 					lastItem = item.getItemName();
 				}
 			} catch (Exception e) {
 				LOGGER.error("Exception during run.", e);
 			}
+			LOGGER.trace("Finished run.");
 		}
 	}
 
@@ -327,6 +354,9 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 			}
 		}
 
+		// TODO: don't create blank files like this. Just compile them into a single
+		// "results.json" file or something like that... much easier to see everything
+		// all at once without cluttering the directory, and then parse later if needed.
 		if (!complete) {
 			try {
 				Files.createFile(Paths.get(this.matchRoot, this.currentMatch.toString(), "incomplete"));
@@ -502,6 +532,7 @@ public class MatchComposer implements OWItemImageListener, Runnable {
 	@Override
 	public void run() {
 
+		LOGGER.debug("Running match composer...");
 		final int captureInterval = OWLib.getInstance().getInteger("captureInterval", 1000);
 
 		for (;;) {

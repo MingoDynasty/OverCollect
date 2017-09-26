@@ -47,6 +47,7 @@ public class FilterEngine implements ImageListener {
 
 		@Override
 		public void run() {
+			LOGGER.trace("Running filter task...");
 			List<OWItem> items = OWLib.getInstance().getItems(i.getWidth(), i.getHeight());
 			List<OWItem> dropItems = OWLib.getInstance().getDropItems(i.getWidth(), i.getHeight());
 			for (OWItem item : dropItems) {
