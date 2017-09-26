@@ -87,7 +87,7 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 			this.match = new OWMatch(matchPath.getFileName().toString());
 		}
 
-		private ScreenExtract createScreenExtract(Path imagePath, Path ocrConfig) {
+		public ScreenExtract createScreenExtract(Path imagePath, Path ocrConfig) {
 			if (OWLib.getInstance().getBoolean("debug.extraction"))
 				LOGGER.debug("Extracting: {}", imagePath.getFileName());
 			if (imagePath.toFile().exists() && ocrConfig.toFile().exists())
