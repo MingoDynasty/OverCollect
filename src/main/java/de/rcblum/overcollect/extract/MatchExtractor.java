@@ -97,10 +97,10 @@ public class MatchExtractor extends TimerTask implements OWMatchListener {
 					OCRConfiguration config = g.fromJson(text, OCRConfiguration.class);
 					if (OWLib.getInstance().getBoolean("debug.extraction")) {
 						LOGGER.debug("OCR-Configuration.pixelDetectionCount: {}", config.pixelDetectionCount);
-						return new ScreenExtract(image, config);
 					}
-				} catch (IOException e) {
-					LOGGER.error("IOException: ", e);
+					return new ScreenExtract(image, config);
+				} catch (IOException ioe) {
+					LOGGER.error("IOException: ", ioe);
 				}
 			return null;
 		}
