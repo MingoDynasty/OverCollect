@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,7 @@ public class OverWatchCollectorAppTest {
 	/**
 	 * Simple test to ensure that the application can start up.
 	 */
-	// @Test
+	@Test
 	public void testOverWatchCollectorApp() throws AWTException, IOException {
 		LOGGER.info("Running: testOverWatchCollectorApp");
 
