@@ -118,6 +118,10 @@ public class JHeroStatsPanel extends JPanel {
 		Properties p = new Properties();
 		BufferedImage b = null;
 		try {
+			// TODO: why do we need to get these portraits from an external site? Why is
+			// this hard-coded? Why did you misspell "potraits"?
+			//
+			// Maybe I am missing something but this looks mind-blowingly stupid.
 			p.load(JHeroStatsPanel.class.getResourceAsStream("/potraits.properties"));
 			URL url = new URL(p.getProperty(this.hero.getName().replaceAll(" ", "")));
 			b = ImageCache.getImage(url);
