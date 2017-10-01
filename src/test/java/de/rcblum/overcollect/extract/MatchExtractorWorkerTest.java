@@ -6,17 +6,27 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.rcblum.overcollect.configuration.OWLib;
 import de.rcblum.overcollect.extract.MatchExtractor.MatchExtractWorker;
+import de.rcblum.overcollect.utils.ApplicationException;
 
 /**
  * JUnit tests for MatchExtractorWorker.
  */
 public class MatchExtractorWorkerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchExtractorWorkerTest.class);
+
+	@BeforeClass
+	public static void setup() throws ApplicationException {
+		OWLib.loadApplicationConfiguration();
+		OWLib.setupLib();
+	}
 
 	/**
 	 * Test to ensure that createScreenExtract() can successfully extract team and
@@ -74,5 +84,10 @@ public class MatchExtractorWorkerTest {
 		assertEquals("2589", enemySr);
 
 		LOGGER.info("Finished: testCreateScreenExtract");
+	}
+
+	@AfterClass
+	public static void tearDown() throws ApplicationException {
+		TestUtils.cleanupConfigurationFile();
 	}
 }

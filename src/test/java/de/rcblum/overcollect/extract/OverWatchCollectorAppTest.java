@@ -8,6 +8,9 @@ import java.nio.file.Paths;
 
 import javax.imageio.ImageIO;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +19,7 @@ import de.rcblum.overcollect.OverWatchCollectorApp;
 import de.rcblum.overcollect.capture.listener.ImageSource;
 import de.rcblum.overcollect.configuration.OWLib;
 import de.rcblum.overcollect.ui.JOverCollectFrame;
+import de.rcblum.overcollect.utils.ApplicationException;
 
 /**
  * JUnit tests for OverWatchCollectorAppTest.
@@ -23,15 +27,24 @@ import de.rcblum.overcollect.ui.JOverCollectFrame;
 public class OverWatchCollectorAppTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OverWatchCollectorAppTest.class);
 
+	@BeforeClass
+	public static void setup() throws ApplicationException {
+		OWLib.loadApplicationConfiguration();
+		OWLib.setupLib();
+	}
+
 	/**
 	 * Simple test to ensure that the application can start up.
 	 */
 	@Test
-	public void testOverWatchCollectorApp() throws AWTException, IOException {
+	public void testOverWatchCollectorApp() throws AWTException, IOException, ApplicationException {
 		LOGGER.info("Running: testOverWatchCollectorApp");
 
 		final String[] args = new String[0];
 		OverWatchCollectorApp.main(args);
+
+		// gotta cleanup the configuration
+		FileUtils.deleteQuietly(OWLib.configPath.toFile());
 
 		LOGGER.info("Finished: testOverWatchCollectorApp");
 	}
@@ -39,7 +52,7 @@ public class OverWatchCollectorAppTest {
 	/**
 	 * Test a full path of the OverWatchCollectorApp, from match start to match end.
 	 */
-	// @Test
+	@Test
 	public void testOverWatchCollectorAppExecution() throws AWTException, IOException {
 		LOGGER.info("Running: testOverWatchCollectorAppExecution");
 
@@ -92,5 +105,10 @@ public class OverWatchCollectorAppTest {
 		}
 
 		LOGGER.info("Finished: testOverWatchCollectorAppExecution");
+	}
+
+	@AfterClass
+	public static void tearDown() throws ApplicationException {
+		TestUtils.cleanupConfigurationFile();
 	}
 }

@@ -28,11 +28,17 @@ import de.rcblum.overcollect.ui.JOverCollectFrame;
 import de.rcblum.overcollect.ui.setup.filter.JFilterSetup;
 import de.rcblum.overcollect.ui.setup.filter.JFilterTest;
 import de.rcblum.overcollect.ui.setup.ocr.JOCRSetup;
+import de.rcblum.overcollect.utils.ApplicationException;
 
 public class OverWatchCollectorApp {
 	private static final Logger LOGGER = LoggerFactory.getLogger(OverWatchCollectorApp.class);
 
-	public static void main(String[] args) throws AWTException, IOException {
+	public static void main(String[] args) throws AWTException, IOException, ApplicationException {
+		LOGGER.info("Starting: main");
+
+		OWLib.loadApplicationConfiguration();
+		OWLib.setupLib();
+
 		try {
 			// Set System L&F
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -90,6 +96,7 @@ public class OverWatchCollectorApp {
 			});
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("/filter_test")) {
 			EventQueue.invokeLater(new Runnable() {
+
 				@Override
 				public void run() {
 					try {
@@ -135,7 +142,7 @@ public class OverWatchCollectorApp {
 
 		}
 
-		LOGGER.info("End main.");
+		LOGGER.info("Finished: main");
 	}
 
 	private ImageSource captureEngine = null;
@@ -147,8 +154,14 @@ public class OverWatchCollectorApp {
 	private MatchExtractor extractor = null;
 
 	public OverWatchCollectorApp() throws AWTException, IOException {
+		LOGGER.info("Starting: collector app");
+
 		OWLib.getInstance();
-		Path libPath = Paths.get(System.getProperties().getProperty("owcollect.lib.dir"));
+
+		// TODO: maybe don't do any verification. Let the OWLib class handle that.
+		// Path libPath =
+		// Paths.get(System.getProperties().getProperty("owcollect.lib.dir"));
+		Path libPath = OWLib.getFileFromClasspath(System.getProperties().getProperty("owcollect.lib.dir"));
 		Path dataPath = Paths.get(System.getProperties().getProperty("owcollect.data.dir"));
 		Path imagePath = Paths.get(System.getProperties().getProperty("owcollect.image.dir"));
 		Path matchPath = Paths.get(System.getProperties().getProperty("owcollect.match.dir"));
@@ -223,6 +236,8 @@ public class OverWatchCollectorApp {
 		} catch (IOException e) {
 			LOGGER.error("IOException: ", e);
 		}
+
+		LOGGER.info("Started: collector app");
 	}
 
 	public void addImageListener(ImageListener listener) {
