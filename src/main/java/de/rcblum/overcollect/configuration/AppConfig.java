@@ -10,7 +10,7 @@ import java.util.List;
 public class AppConfig {
 
 	/*
-	 * Note: this is the only non-config property in this class. This variable is so
+	 * NOTE: this is the only non-config property in this class. This variable is so
 	 * that this class has a reference to where it exists on the file system.
 	 */
 	private Path configPath;

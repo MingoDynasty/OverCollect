@@ -22,8 +22,12 @@ import de.rcblum.overcollect.utils.ApplicationException;
 public class MatchExtractorWorkerTest {
 	private static final Logger LOGGER = LoggerFactory.getLogger(MatchExtractorWorkerTest.class);
 
+	private static boolean isExistingApplicationConfiguration = false;
+
 	@BeforeClass
 	public static void setup() throws ApplicationException {
+		isExistingApplicationConfiguration = OWLib.isExistingApplicationConfiguration();
+
 		OWLib.loadApplicationConfiguration();
 		OWLib.setupLib();
 	}
@@ -88,6 +92,8 @@ public class MatchExtractorWorkerTest {
 
 	@AfterClass
 	public static void tearDown() throws ApplicationException {
-		TestUtils.cleanupConfigurationFile();
+		if (!isExistingApplicationConfiguration) {
+			TestUtils.cleanupConfigurationFile();
+		}
 	}
 }

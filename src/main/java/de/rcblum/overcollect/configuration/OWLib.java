@@ -165,6 +165,12 @@ public class OWLib {
 		}
 	}
 
+	public static boolean isExistingApplicationConfiguration() {
+		// search for the config file in the current working directory
+		final Path configPath = Paths.get(getCurrentWorkingDirectory(), CONFIG_FILENAME);
+		return configPath.toFile().exists();
+	}
+
 	public static void loadApplicationConfiguration() {
 		LOGGER.info("Loading application configuration...");
 
