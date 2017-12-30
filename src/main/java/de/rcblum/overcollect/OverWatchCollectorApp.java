@@ -83,6 +83,7 @@ public class OverWatchCollectorApp {
 			LOGGER.debug("/glyph_update               Update glyph data unsing the Filter data");
 			System.exit(0);
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("/filter_setup")) {
+			LOGGER.debug("Found 'filter_setup' argument. Running Filter Setup...");
 			EventQueue.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -95,6 +96,7 @@ public class OverWatchCollectorApp {
 				}
 			});
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("/filter_test")) {
+			LOGGER.debug("Found 'filter_test' argument. Running Filter Test...");
 			EventQueue.invokeLater(new Runnable() {
 
 				@Override
@@ -108,6 +110,7 @@ public class OverWatchCollectorApp {
 				}
 			});
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("/ocr_setup")) {
+			LOGGER.debug("Found 'ocr_setup' argument. Running OCR setup...");
 			EventQueue.invokeLater(new Runnable() {
 				@Override
 				public void run() {
@@ -120,6 +123,7 @@ public class OverWatchCollectorApp {
 				}
 			});
 		} else if (args.length > 0 && args[0].equalsIgnoreCase("/glyph_update")) {
+			LOGGER.debug("Found 'glyph_update' argument. Running Glyph Update...");
 			Glyph.main(args);
 		} else {
 			OverWatchCollectorApp app = new OverWatchCollectorApp();
